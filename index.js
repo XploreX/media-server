@@ -11,15 +11,15 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'mustache');
 app.engine('mustache', mustacheExpress());
 
-const PUBLIC = '/run/media/user/DATA/tv series';
+const CONTENT = '/run/media/user/DATA/tv series';
 
-app.use('/', serveIndex(PUBLIC, {icons: true}));
+app.use('/', serveIndex(CONTENT, {icons: true}));
 
-app.use('/content', express.static(PUBLIC));
+app.use('/public', express.static(CONTENT));
 
 app.use((req, res, next) => {
     req.url = decodeURI(req.url);
-    req.url = path.join('content', req.url);
+    req.url = path.join('public', req.url);
     console.log(req.url);
     let fileName = '/' + req.url;
     let videoName = path.basename(fileName);

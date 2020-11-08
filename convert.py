@@ -53,8 +53,8 @@ if(not os.path.isdir(args.path)):
     dirs = [os.path.basename(args.path)]
     basedir = os.path.dirname(args.path)
 else:
-    dirs = [os.path.basename(i) for i in os.listdir(
-        args.path) if i.endswith(".mkv")]
+    dirs = [os.path.basename(filename) for filename in os.listdir(
+        args.path) if filename.endswith(".mkv")]
     basedir = args.path
 
 # create output dirs
@@ -65,7 +65,7 @@ except:
     pass
 
 # A helper function to not create a new line if progress texts are found
-def match_percent(l2):
+def match_progress_string(l2):
     if('speed' in l2):
         return True
     else:
@@ -91,34 +91,34 @@ if(not args.s and not args.x):
     args.n=True
 
 # Iterating of files
-for i in dirs:
+for filename in dirs:
 
-    filename_without_ext = '.'.join(i.split('.')[:-1])
-    finalsubs = os.path.join(output_dir, filename_without_ext+".vtt")
-    finaloutputfile = os.path.join(output_dir, filename_without_ext+".mp4")
+    filename_without_ext = '.'.join(filename.split('.')[:-1])
+    final_subs_file = os.path.join(output_dir, filename_without_ext+".vtt")
+    final_video_file = os.path.join(output_dir, filename_without_ext+".mp4")
 
-    print_color(bcolors.HEADER,f"+ Started Process for {i}",True)
+    print_color(bcolors.HEADER,f"+ Started Process for {filename}",True)
 
     # If we have to extract args
     success_subs=True
     if(not args.n):
 
-        subsfile = ""
+        initial_subs_file = ""
 
         # choose the subsfile based on params
         if(args.x):
-            subsfile = os.path.join(basedir,i)
+            initial_subs_file = os.path.join(basedir,filename)
         elif(args.s):
-            subsfile = os.path.join(basedir,filename_without_ext+".srt")
+            initial_subs_file = os.path.join(basedir,filename_without_ext+".srt")
 
-        logger.debug(f"subsfile: {subsfile}")
+        logger.debug(f"subsfile: {initial_subs_file}")
 
-        if(subsfile != "" and os.path.isfile(subsfile)):
+        if(initial_subs_file != "" and os.path.isfile(initial_subs_file)):
 
-            print_color(bcolors.OKCYAN,f"+ Extracting subs from {subsfile}")
+            print_color(bcolors.OKCYAN,f"+ Extracting subs from {initial_subs_file}")
 
             # create the shell command
-            sh = f'ffmpeg -y -i "{os.path.join(basedir,i)}" "{finalsubs}"'
+            sh = f'ffmpeg -y -i "{os.path.join(basedir,filename)}" "{final_subs_file}"'
             logger.debug(sh)
 
             # spawn popen process
@@ -147,7 +147,7 @@ for i in dirs:
                         continue
 
                     # if match_percent return True, write in same line else create a new line
-                    if(match_percent(output.strip())):
+                    if(match_progress_string(output.strip())):
                         sys.stdout.write('\r'+output.strip())
                         sys.stdout.flush()
                     else:
@@ -161,11 +161,11 @@ for i in dirs:
                 print()
                 print_color(bcolors.OKGREEN,f"+ Extracted Subtitles")
         else:
-            print_color(bcolors.FAIL,f"- Err:{subsfile} not found")
+            print_color(bcolors.FAIL,f"- Err:{initial_subs_file} not found")
             success_subs=False
 
     # check the codecs in original file
-    sh = f'ffprobe "{os.path.join(basedir,i)}" 2>&1 >/dev/null | grep -i "Stream"'
+    sh = f'ffprobe "{os.path.join(basedir,filename)}" 2>&1 >/dev/null | grep -i "Stream"'
     process = sp.Popen(sh, shell=True, stderr=sp.PIPE, stdout=sp.PIPE)
 
     # get all the outputs
@@ -210,19 +210,18 @@ for i in dirs:
         codecs[2] = 'mov_text'
 
     logger.debug(f"final codecs: {codecs}")
-    print_color(bcolors.OKCYAN,f"+ converting video {i}")
+    print_color(bcolors.OKCYAN,f"+ converting video {filename}")
 
     # if subs are successful and subtitles are to be embedded
     if(not args.n and success_subs==True):
-        sh = f'ffmpeg -y -vsync 0 -hwaccel auto -i "{os.path.join(basedir,i)}" '
-        sh+=f'-f webvtt -i "{finalsubs}" -map 1:0 '
-        sh+=f'-map 0:0 -map 0:1 -c:v {codecs[0]} -c:a {codecs[1]} -c:s {codecs[2]} "{finaloutputfile}"'
+        sh = f'ffmpeg -y -vsync 0 -hwaccel auto -i "{os.path.join(basedir,filename)}" '
+        sh+=f'-f webvtt -i "{final_subs_file}" -map 1:0 '
+        sh+=f'-map 0:0 -map 0:1 -c:v {codecs[0]} -c:a {codecs[1]} -c:s {codecs[2]} "{final_video_file}"'
     else:
-        sh = f'ffmpeg -y -vsync 0 -hwaccel auto -i "{os.path.join(basedir,i)}" -c:v {codecs[0]} -c:a {codecs[1]} "{finaloutputfile}"'
+        sh = f'ffmpeg -y -vsync 0 -hwaccel auto -i "{os.path.join(basedir,filename)}" -c:v {codecs[0]} -c:a {codecs[1]} "{final_video_file}"'
 
     logger.debug(sh)
     process=sp.Popen(sh,shell=True,stderr=sp.STDOUT,stdout=sp.PIPE,universal_newlines=True)
-
 
     while True:
 
@@ -240,7 +239,7 @@ for i in dirs:
                 continue
 
             # if match_percent return True, write in same line else create a new line
-            if(match_percent(output.strip())):
+            if(match_progress_string(output.strip())):
                 sys.stdout.write('\r'+output.strip())
                 sys.stdout.flush()
             else:
@@ -251,5 +250,5 @@ for i in dirs:
 
     #create a new line coz last outputs might have been written in same line
     print()
-    print_color(bcolors.OKGREEN,f"+ Converted {i}")
+    print_color(bcolors.OKGREEN,f"+ Converted {filename}")
 

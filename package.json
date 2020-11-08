@@ -1,8 +1,8 @@
 {
-  "name": "stream_server",
+  "name": "MediaServer",
   "version": "1.0.0",
   "description": "A simple server to stream media content",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,7 +11,7 @@
     "local",
     "server"
   ],
-  "author": "parth",
+  "author": "manorit and parth",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0",

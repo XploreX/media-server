@@ -5,6 +5,7 @@ const serveIndex = require('serve-index');
 const url = require('url');
 const path = require('path');
 const fs = require('fs')
+require('dotenv').config()
 
 const app = express();
 
@@ -12,7 +13,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'mustache');
 app.engine('mustache', mustacheExpress());
 
-const CONTENT = '/run/media/user/DATA/tv series';
+const CONTENT = process.env.LOCATION;
 
 app.use('/', serveIndex(CONTENT, {
     icons: true,

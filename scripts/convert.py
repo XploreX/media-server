@@ -32,6 +32,7 @@ parser.add_argument(
     '-x', help='if subtitles are to be extracted from the video', action="store_true")
 parser.add_argument(
     '-s', help='if subtitles are to be used from srt file available in the folder', action="store_true")
+parser.add_argument('-o', help='convert only subtitles for the videos',action="store_true")
 parser.add_argument('-n', help='no subs', action="store_true")
 parser.add_argument('-v', help='verbose', action="store_true")
 args = parser.parse_args()
@@ -118,7 +119,7 @@ for filename in dirs:
             print_color(bcolors.OKCYAN,f"+ Extracting subs from {initial_subs_file}")
 
             # create the shell command
-            sh = f'ffmpeg -y -i "{os.path.join(basedir,filename)}" "{final_subs_file}"'
+            sh = f'ffmpeg -y -i "{initial_subs_file}" "{final_subs_file}"'
             logger.debug(sh)
 
             # spawn popen process
@@ -163,6 +164,9 @@ for filename in dirs:
         else:
             print_color(bcolors.FAIL,f"- Err:{initial_subs_file} not found")
             success_subs=False
+
+    if(args.o):
+        continue
 
     # check the codecs in original file
     sh = f'ffprobe "{os.path.join(basedir,filename)}" 2>&1 >/dev/null | grep -i "Stream"'

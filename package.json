@@ -6,6 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": "server.js",
+  "pkg": {
+      "assets": "./src/**"
+  },
+  "targets": ["node14"],
   "keywords": [
     "streaming",
     "local",

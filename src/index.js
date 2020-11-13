@@ -19,7 +19,7 @@ app.use('/', serveIndex(CONTENT, {
     icons: true,
     filter: function (file, pos, list, dir) {
         // console.log(arguments);
-        return ((fs.existsSync(path.join(dir, file)) && fs.lstatSync(path.join(dir, file)).isDirectory()) || file.indexOf('.mp4') >= 1);
+        return ((fs.existsSync(path.join(dir, file)) && fs.lstatSync(path.join(dir, file)).isDirectory()) || file.search(/.(mp4|mkv|avi)/) >= 1);
     }
 }));
 

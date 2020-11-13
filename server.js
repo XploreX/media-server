@@ -3,7 +3,7 @@ const path = require('path')
 
 const nets = networkInterfaces();
 
-const app = require(path.join(__dirname, 'src', 'index'));
+const app = require(path.join(__dirname, 'src', 'index.js'));
 
 const PORT = process.env.PORT || 3000;
 

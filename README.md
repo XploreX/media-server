@@ -18,8 +18,10 @@ Just download the release version respective to your OS and start it like given 
 `LOCATION="/path/to/video/directories" ./MediaServer-linux`
 
 ### Windows
-`set LOCATION="\path\to\video\directories" && .\MediaServer-win.exe`
-
+```
+set LOCATION=\path\to\video\directories
+.\MediaServer-win.exe
+```
 ### MacOS
 `Figure out yourselves, I don't own mac.`
 

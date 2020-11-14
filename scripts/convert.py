@@ -89,6 +89,44 @@ def subs_error_ffmpeg(output):
         return True 
     return False
 
+# A helper function to get the output from processes and handle errors based function given
+def get_output(process,error_handler=None):
+    success=True
+    while True:
+
+        # get the output and error
+        output = process.stdout.readline()
+
+        # if not output and process end, break from loop
+        if output == '' and process.poll() is not None:
+            break
+
+        if output:
+
+            # check for subtitles extraction errors in output
+            if(error_handler!=None and error_handler(output)):
+                process.terminate()
+                success=False
+                break
+
+            # if not verbose, show only the progress
+            if(not args.v and not 'speed' in output):
+                continue
+
+            # if match_percent return True, write in same line else create a new line
+            if(match_progress_string(output.strip())):
+                sys.stdout.write('\r'+output.strip()+' '*20)
+                sys.stdout.flush()
+            else:
+                print(output.strip())
+        
+        # get the return code
+        rc = process.poll()
+
+    #create a new line coz last outputs might have been written in same line
+    if(success):
+        print()
+    return success
 
 # if no method for extracting subs given, defaults to no subs to be extracted
 if(not args.s and not args.x):
@@ -99,9 +137,11 @@ for filename in dirs:
 
     filename_without_ext = '.'.join(filename.split('.')[:-1])
     final_subs_file = os.path.join(output_dir, filename_without_ext+".vtt")
-    final_video_file = os.path.join(output_dir, filename_without_ext+".mp4")
+    final_subs_file=""
     if(args.f):
         final_video_file = os.path.join(output_dir, filename)
+    else:
+        final_video_file = os.path.join(output_dir, filename_without_ext+".mp4")
 
     print_color(bcolors.HEADER,f"+ Started Process for {filename}",True)
 
@@ -131,80 +171,31 @@ for filename in dirs:
             process = sp.Popen(sh, shell=True, universal_newlines=True,
                             stderr=sp.STDOUT, stdout=sp.PIPE)
 
-            while True:
-
-                # get the output and error
-                output = process.stdout.readline()
-
-                # if not output and process end, break from loop
-                if output == '' and process.poll() is not None:
-                    break
-
-                if output:
-
-                    # check for subtitles extraction errors in output
-                    if(subs_error_ffmpeg(output)):
-                        process.terminate()
-                        success_subs=False
-                        break
-
-                    # if not verbose, show only the progress
-                    if(not args.v and not 'speed' in output):
-                        continue
-
-                    # if match_percent return True, write in same line else create a new line
-                    if(match_progress_string(output.strip())):
-                        sys.stdout.write('\r'+output.strip()+' '*20)
-                        sys.stdout.flush()
-                    else:
-                        print(output.strip())
-                
-                # get the return code
-                rc = process.poll()
-            
-            #create a new line coz last outputs might have been written in same line
+            success_subs=get_output(process,subs_error_ffmpeg)
             if(success_subs):
-                print()
                 print_color(bcolors.OKGREEN,f"+ Extracted Subtitles")
+            else:
+                print_color(bcolors.FAIL,f"- Err Extracting Subtitles")
         else:
             print_color(bcolors.FAIL,f"- Err:{initial_subs_file} not found")
             success_subs=False
 
+    # If subtitle only flag given, copy the video to the folder 
     if(args.o):
         print_color(bcolors.HEADER,f"* Copying Video to output_folder as subtitle only conversion given")
+
+        # Using ffmpeg to show the copy progress, shutil copy doesn't have any helper function for that
         sh = f'ffmpeg -y -vsync 0 -hwaccel auto -i "{os.path.join(basedir,filename)}" -c copy "{os.path.join(output_dir,filename)}"'
-        #shutil.copy(os.path.join(basedir,filename),os.path.join(output_dir,filename))
+
         logger.debug(sh)
         process=sp.Popen(sh,shell=True,stderr=sp.STDOUT,stdout=sp.PIPE,universal_newlines=True)
 
-        while True:
-
-            # get the output and error
-            output = process.stdout.readline()
-
-            # if not output and process end, break from loop
-            if output == '' and process.poll() is not None:
-                break
-
-            if output:
-
-                # if not verbose, show only the progress
-                if(not args.v and not 'speed' in output):
-                    continue
-
-                # if match_percent return True, write in same line else create a new line
-                if(match_progress_string(output.strip())):
-                    sys.stdout.write('\r'+output.strip()+' '*20)
-                    sys.stdout.flush()
-                else:
-                    print(output.strip())
-
-            # get the return code
-            rc = process.poll()
-
-        #create a new line coz last outputs might have been written in same line
-        print()
-        print_color(bcolors.OKGREEN,f"+ Video Copied")
+        success=get_output(process)
+        
+        if(success):
+            print_color(bcolors.OKGREEN,f"+ Video Copied")
+        else:
+            print_color(bcolors.FAIL,f"- Some Error Occurred While Copying")
         continue
 
     # check the codecs in original file
@@ -276,32 +267,10 @@ for filename in dirs:
     logger.debug(sh)
     process=sp.Popen(sh,shell=True,stderr=sp.STDOUT,stdout=sp.PIPE,universal_newlines=True)
 
-    while True:
+    success=get_output(process)
+    if(success):
+        print_color(bcolors.OKGREEN,f"+ Converted {filename}")
+    else:
+        print_color(bcolors.FAIL,f"- Some error occurred while converting {filename}")
 
-        # get the output and error
-        output = process.stdout.readline()
-
-        # if not output and process end, break from loop
-        if output == '' and process.poll() is not None:
-            break
-
-        if output:
-
-            # if not verbose, show only the progress
-            if(not args.v and not 'speed' in output):
-                continue
-
-            # if match_percent return True, write in same line else create a new line
-            if(match_progress_string(output.strip())):
-                sys.stdout.write('\r'+output.strip()+' '*20)
-                sys.stdout.flush()
-            else:
-                print(output.strip())
-
-        # get the return code
-        rc = process.poll()
-
-    #create a new line coz last outputs might have been written in same line
-    print()
-    print_color(bcolors.OKGREEN,f"+ Converted {filename}")
 

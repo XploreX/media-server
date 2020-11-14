@@ -6,6 +6,7 @@ import re
 import subprocess as sp
 import sys
 import time
+import shutil
 
 logger = logging.getLogger("convert.py")
 logger.setLevel(logging.DEBUG)
@@ -32,6 +33,8 @@ parser.add_argument(
     '-x', help='if subtitles are to be extracted from the video', action="store_true")
 parser.add_argument(
     '-s', help='if subtitles are to be used from srt file available in the folder', action="store_true")
+parser.add_argument(
+    '-f', help='try faster conversion(may not work)', action="store_true")
 parser.add_argument('-o', help='convert only subtitles for the videos',action="store_true")
 parser.add_argument('-n', help='no subs', action="store_true")
 parser.add_argument('-v', help='verbose', action="store_true")
@@ -55,7 +58,7 @@ if(not os.path.isdir(args.path)):
     basedir = os.path.dirname(args.path)
 else:
     dirs = [os.path.basename(filename) for filename in os.listdir(
-        args.path) if filename.endswith(".mkv")]
+        args.path) if filename.endswith(".mkv") or filename.endswith(".mp4") or filename.endswith(".avi")]
     basedir = args.path
 
 # create output dirs
@@ -97,6 +100,8 @@ for filename in dirs:
     filename_without_ext = '.'.join(filename.split('.')[:-1])
     final_subs_file = os.path.join(output_dir, filename_without_ext+".vtt")
     final_video_file = os.path.join(output_dir, filename_without_ext+".mp4")
+    if(args.f):
+        final_video_file = os.path.join(output_dir, filename)
 
     print_color(bcolors.HEADER,f"+ Started Process for {filename}",True)
 
@@ -149,7 +154,7 @@ for filename in dirs:
 
                     # if match_percent return True, write in same line else create a new line
                     if(match_progress_string(output.strip())):
-                        sys.stdout.write('\r'+output.strip())
+                        sys.stdout.write('\r'+output.strip()+' '*20)
                         sys.stdout.flush()
                     else:
                         print(output.strip())
@@ -166,6 +171,40 @@ for filename in dirs:
             success_subs=False
 
     if(args.o):
+        print_color(bcolors.HEADER,f"* Copying Video to output_folder as subtitle only conversion given")
+        sh = f'ffmpeg -y -vsync 0 -hwaccel auto -i "{os.path.join(basedir,filename)}" -c copy "{os.path.join(output_dir,filename)}"'
+        #shutil.copy(os.path.join(basedir,filename),os.path.join(output_dir,filename))
+        logger.debug(sh)
+        process=sp.Popen(sh,shell=True,stderr=sp.STDOUT,stdout=sp.PIPE,universal_newlines=True)
+
+        while True:
+
+            # get the output and error
+            output = process.stdout.readline()
+
+            # if not output and process end, break from loop
+            if output == '' and process.poll() is not None:
+                break
+
+            if output:
+
+                # if not verbose, show only the progress
+                if(not args.v and not 'speed' in output):
+                    continue
+
+                # if match_percent return True, write in same line else create a new line
+                if(match_progress_string(output.strip())):
+                    sys.stdout.write('\r'+output.strip()+' '*20)
+                    sys.stdout.flush()
+                else:
+                    print(output.strip())
+
+            # get the return code
+            rc = process.poll()
+
+        #create a new line coz last outputs might have been written in same line
+        print()
+        print_color(bcolors.OKGREEN,f"+ Video Copied")
         continue
 
     # check the codecs in original file
@@ -174,55 +213,65 @@ for filename in dirs:
 
     # get all the outputs
     outputs = process.stdout.readlines()
-    regexes = ['Video: ([a-zA-Z0-9]*)', 'Audio: ([a-zA-Z0-9]*)',
-               'Subtitle: ([a-zA-Z0-9]*)']
-    codecs = ['', '', '']
+    regexes = ['(Video): ([a-zA-Z0-9]*)', '(Audio): ([a-zA-Z0-9]*)',
+               '(Subtitle): ([a-zA-Z0-9]*)']
+    codecs = {
+        'Video':"",
+        'Audio':"",
+        'Subtitle':"",
+    }
 
     # extract the codecs using regex
     for j in range(len(outputs)):
         extracts = outputs[j]
         try:
-            codecs[j] = re.search(regexes[j], extracts.decode()).groups()[0].strip()
+            stream = re.search(regexes[j], extracts.decode()).groups()[0].strip()
+            codec = re.search(regexes[j], extracts.decode()).groups()[1].strip()
+            codecs[stream]=codec
         except:
             pass
 
     logger.debug(f"initial codecs: {codecs}")
 
     # if codec is h264, no need to reencode
-    if(codecs[0] == 'h264'):
-        codecs[0] = 'copy'
+    if(codecs['Video'] == 'h264'):
+        print_color(bcolors.OKGREEN,f"+ Supported Video format")
+        codecs['Video'] = 'copy'
     else:
+        print_color(bcolors.WARNING,f"! Unsupported Video format")
         #if codec is different, ask the user as this is time consuming process
-        convert_vid=input(f"current video codec is {codecs[0]}, convert it to h264?(y/N)")
+        convert_vid=input(f"current video codec is {codecs['Video']}, convert it to h264?(y/N)")
 
         # defaults to N so only checking if Y entered
         if(convert_vid.capitalize=='Y'):
-            codecs[0]='h264'
+            codecs['Video']='h264'
         else:
-            codecs[0]='copy'
+            codecs['Video']='copy'
     
     # audio codec conversions ain't much time consuming so not asking for user input on that
-    if(codecs[1] == 'aac'):
-        codecs[1] = 'copy'
+    if(codecs['Audio'] == 'aac'):
+        print_color(bcolors.OKGREEN,f"+ Supported Audio format")
+        codecs['Audio'] = 'copy'
     else:
-        codecs[1] = 'aac'
+        print_color(bcolors.WARNING,f"! Unsupported Audio format, Converting it")
+        codecs['Audio'] = 'aac'
 
     # subtitle codecs
     if(args.n):
-        codecs[2]=''
+        codecs['Subtitle']=''
     else:
-        codecs[2] = 'mov_text'
+        codecs['Subtitle'] = 'mov_text'
 
     logger.debug(f"final codecs: {codecs}")
     print_color(bcolors.OKCYAN,f"+ converting video {filename}")
 
     # if subs are successful and subtitles are to be embedded
-    if(not args.n and success_subs==True):
-        sh = f'ffmpeg -y -vsync 0 -hwaccel auto -i "{os.path.join(basedir,filename)}" '
+    if(not args.n and success_subs==True and not args.f):
+        sh = f'ffmpeg -y -vsync 0 -threads {os.cpu_count()} -hwaccel auto -i "{os.path.join(basedir,filename)}" '
         sh+=f'-f webvtt -i "{final_subs_file}" -map 1:0 '
-        sh+=f'-map 0:0 -map 0:1 -c:v {codecs[0]} -c:a {codecs[1]} -c:s {codecs[2]} "{final_video_file}"'
+        sh+=f'-map 0:0 -map 0:1 -c:v {codecs["Video"]} -c:a {codecs["Audio"]} -c:s {codecs["Subtitle"]} "{final_video_file}"'
     else:
-        sh = f'ffmpeg -y -vsync 0 -hwaccel auto -i "{os.path.join(basedir,filename)}" -c:v {codecs[0]} -c:a {codecs[1]} "{final_video_file}"'
+        sh = f'ffmpeg -y -vsync 0 -threads {os.cpu_count()} -hwaccel auto -i "{os.path.join(basedir,filename)}" -c:v {codecs["Video"]} -c:a {codecs["Audio"]} "{final_video_file}"'
 
     logger.debug(sh)
     process=sp.Popen(sh,shell=True,stderr=sp.STDOUT,stdout=sp.PIPE,universal_newlines=True)
@@ -244,7 +293,7 @@ for filename in dirs:
 
             # if match_percent return True, write in same line else create a new line
             if(match_progress_string(output.strip())):
-                sys.stdout.write('\r'+output.strip())
+                sys.stdout.write('\r'+output.strip()+' '*20)
                 sys.stdout.flush()
             else:
                 print(output.strip())

@@ -1,8 +1,8 @@
 # MediaServer
+![build](https://img.shields.io/github/workflow/status/manorit2001/MediaServer/Caching%20with%20npm)
 ![issues](https://img.shields.io/github/issues/manorit2001/MediaServer)
 ![forks](https://img.shields.io/github/forks/manorit2001/MediaServer)
 ![stars](https://img.shields.io/github/stars/manorit2001/MediaServer)
-![license](https://img.shields.io/github/license/manorit2001/MediaServer)
 
 _Tired of buying subscriptions to watch you favorite shows on your smart tv?!_
 _Tired of using pendrive to copy paste media while wanting to watch them in tv?_

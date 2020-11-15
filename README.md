@@ -4,8 +4,8 @@
 ![forks](https://img.shields.io/github/forks/manorit2001/MediaServer)
 ![stars](https://img.shields.io/github/stars/manorit2001/MediaServer)
 
-_Tired of buying subscriptions to watch you favorite shows on your smart tv?!_
 _Tired of using pendrive to copy paste media while wanting to watch them in tv?_
+_Wish that you could watch your laptop videos in tv easily?_
 
 Don't worry, MediaServer has come to your rescue. It is a local media server to host your laptop contents and view it anywhere
 **(currently supports sharing mp4/mkv/avi h264 encoded videos)**

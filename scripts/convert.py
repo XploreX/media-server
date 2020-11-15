@@ -137,7 +137,7 @@ for filename in dirs:
 
     filename_without_ext = '.'.join(filename.split('.')[:-1])
     final_subs_file = os.path.join(output_dir, filename_without_ext+".vtt")
-    final_subs_file=""
+    final_video_file=""
     if(args.f):
         final_video_file = os.path.join(output_dir, filename)
     else:

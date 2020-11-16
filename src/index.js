@@ -16,6 +16,8 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'mustache');
 app.engine('mustache', mustacheExpress());
 
+app.use(express.json());
+app.use(express.urlencoded({extended : true}));
 app.use(session({
     secret : [config.sessionSecret],
     resave : false,

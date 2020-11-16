@@ -1,11 +1,14 @@
+const path = require('path');
+const fs = require('fs');
+
 const express = require('express');
+const session = require('express-session');
 const mustacheExpress = require('mustache-express');
 const { StatusCodes } = require('http-status-codes');
 const serveIndex = require('serve-index');
-const url = require('url');
-const path = require('path');
-const fs = require('fs')
 require('dotenv').config()
+
+const config = require(__dirname + '/config');
 
 const app = express();
 
@@ -13,13 +16,23 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'mustache');
 app.engine('mustache', mustacheExpress());
 
+app.use(session({
+    secret : [config.sessionSecret],
+    resave : false,
+    saveUninitialized : true,
+    cookie : {
+        maxAge : 360000 //milliseconds in 1 hour
+    }
+}));
+
 const CONTENT = process.env.LOCATION;
+const supportedFormatsReg = new RegExp('\\.'+config.supportedFormats.join('|'),'i');
 
 app.use('/', serveIndex(CONTENT, {
     icons: true,
     filter: function (file, pos, list, dir) {
         // console.log(arguments);
-        return ((fs.existsSync(path.join(dir, file)) && fs.lstatSync(path.join(dir, file)).isDirectory()) || file.search(/.(mp4|mkv|avi)/) >= 1);
+        return ((fs.existsSync(path.join(dir, file)) && fs.lstatSync(path.join(dir, file)).isDirectory()) || supportedFormatsReg.test(file));
     }
 }));
 
@@ -31,8 +44,7 @@ app.use((req, res, next) => {
     console.log(absoluteFilePath)
     // added a 404 when the url is invalid
     if (!fs.existsSync(absoluteFilePath)) {
-        res.status(404)
-        res.end("Not found")
+        res.sendStatus(StatusCodes.NOT_FOUND)
     }
     else {
         req.url = path.join('public', req.url);

@@ -1,4 +1,4 @@
 module.exports = {
     requestUtil : require('./request'),
-    responseUtil : require('/response')
+    responseUtil : require('./response')
 };

@@ -9,6 +9,7 @@ const serveIndex = require('serve-index');
 require('dotenv').config()
 
 const config = require(__dirname + '/config');
+const videoRouter = require(config.root + '/routes/video');
 
 const app = express();
 
@@ -40,7 +41,9 @@ app.use('/', serveIndex(CONTENT, {
 
 app.use('/public', express.static(CONTENT));
 
-app.use((req, res, next) => {
+app.use(videoRouter);
+
+app.get('/*',(req, res, next) => {
     req.url = decodeURI(req.url);
     let absoluteFilePath = path.join(CONTENT, unescape(req.url))
     console.log(absoluteFilePath)

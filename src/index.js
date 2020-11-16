@@ -59,7 +59,7 @@ app.use((req, res, next) => {
             videoType = "video/mp4"
             subtitleSource = fileName.replace('.mp4', '.vtt');
         }
-        res.render('displayVideo.mustache', {
+        res.render('displayVideoTemp.mustache', {
             videoName: videoName,
             videoSource: fileName,
             videoType: videoType,

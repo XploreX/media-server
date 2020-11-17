@@ -13,17 +13,18 @@
     </title>
 </head>
 
-<body>
+  <body class="container-fluid pt-3 bg-dark text-light">
     <div class="container">
         <div class="row">
             <div class="col">
-                <h1>
-                    {{videoName}}
-                </h1>
+                <kbd class="d-flex justify-content-center">
+                    <h3> {{videoName}} </h3>
+                </kbd>
             </div>
         </div>
         <div class="row">
             <div class="col">
+              <div class="embed-responsive embed-responsive-16by9">
                 <video width=1280 controls>
                     <source src="{{videoSource}}" type="{{videoType}}">
                     <track src="{{subtitleSource}}" kind="subtitles" srclang="en" label="English" default />
@@ -31,6 +32,7 @@
                         Your browser doesn't support HTML5 video.
                     </p>
                 </video>
+              </div>
             </div>
         </div>
     </div>

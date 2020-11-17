@@ -72,10 +72,10 @@ app.get('/*', (req, res, next) => {
     // we can add more mime types this way
     videoType = 'video/mp4';
     subtitleSource = fileName.replace(supportedFormatsReg, '.vtt');
-    console.log(videoSource, subtitleSource);
+    // console.log(videoSource, subtitleSource);
     res.render('displayVideoTemp.mustache', {
       videoName: videoName,
-      videoSource: fileName,
+      videoSource: videoSource,
       videoType: videoType,
       subtitleSource: subtitleSource,
     });

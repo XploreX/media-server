@@ -3,6 +3,7 @@
 ![issues](https://img.shields.io/github/issues/manorit2001/MediaServer)
 ![forks](https://img.shields.io/github/forks/manorit2001/MediaServer)
 ![stars](https://img.shields.io/github/stars/manorit2001/MediaServer)
+![license](https://img.shields.io/github/license/manorit2001/MediaServer)
 
 _Tired of using pendrive to copy paste media while wanting to watch them in tv?_
 _Wish that you could watch your laptop videos in tv easily?_

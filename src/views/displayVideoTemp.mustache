@@ -37,26 +37,53 @@
 
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
+        </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-        crossorigin="anonymous"></script>
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous">
+        </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         $(document).ready(() => {
             const video = document.querySelector('video');
-            video.ontimeupdate = (event) => {
-                console.log("currentTime attribute value of video = "+video.currentTime);
+            axios.get('/video/get-current-time', {
+                params: {
+                    source: '{{{videoSource}}}'
+                }
+            })
+                .then((response) => {
+                    let currentTimeReceived = response.data.data.currentTime;
+                    if (currentTimeReceived >0 && confirm("Resume video ?")) {
+                        video.currentTime = currentTimeReceived;
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+
+            function updateCurrentTime() {
+                return axios.post('/video/update-current-time', {
+                    source: "{{{videoSource}}}",
+                    currentTime: video.currentTime,
+                }, {
+
+                })
+                    .then((response) => {
+                        console.log(response);
+                    })
+                    .catch((error) => {
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
+                        console.log(error.request);
+                    })
             }
-            if (confirm("Resume video ?")) {
-                console.log("Yes ,resume");
-                video.currentTime = 10*60;
-            }
-            else {
-                console.log("Don't resume");
-            }
-            
+
+            setInterval(updateCurrentTime, 10000); //call setInterval function every 10s
+
         })
     </script>
 

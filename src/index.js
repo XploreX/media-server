@@ -6,6 +6,8 @@ const session = require('express-session');
 const mustacheExpress = require('mustache-express');
 const { StatusCodes } = require('http-status-codes');
 const serveIndex = require('serve-index');
+const morganBody = require('morgan-body');
+
 require('dotenv').config()
 
 const config = require(__dirname + '/config');
@@ -31,7 +33,13 @@ app.use(session({
 const CONTENT = process.env.LOCATION;
 const supportedFormatsReg = new RegExp('\\.'+config.supportedFormats.join('|'),'i');
 
-app.use('/', serveIndex(CONTENT, {
+morganBody(app,{
+    logAllReqHeader : true
+});
+
+app.use('/video',videoRouter);
+
+app.get('/', serveIndex(CONTENT, {
     icons: true,
     filter: function (file, pos, list, dir) {
         // console.log(arguments);
@@ -41,7 +49,6 @@ app.use('/', serveIndex(CONTENT, {
 
 app.use('/public', express.static(CONTENT));
 
-app.use(videoRouter);
 
 app.get('/*',(req, res, next) => {
     req.url = decodeURI(req.url);

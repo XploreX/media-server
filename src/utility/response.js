@@ -5,7 +5,7 @@ function getSuccessResponse(data) {
     if(data) {
         response.data = data;
     }
-    return data;
+    return response;
 }
 
 module.exports = {

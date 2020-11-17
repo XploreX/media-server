@@ -3,22 +3,17 @@ const fs = require('fs');
 
 const express = require('express');
 const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
 const mustacheExpress = require('mustache-express');
 const {StatusCodes} = require('http-status-codes');
 const serveIndex = require('serve-index');
 const morganBody = require('morgan-body');
-const {MongoClient} = require('mongodb');
+const FileStore = require('session-file-store')(session);
 
 require('dotenv').config();
 
 const config = require(__dirname + '/config');
 const videoRouter = require(config.root + '/routes/video');
 const videoService = require(config.root + '/services/video');
-
-// creating mongodb client
-const client =
-  new MongoClient(config.dbConnectionString, {useUnifiedTopology: true});
 
 const app = express();
 
@@ -35,7 +30,7 @@ app.use(session({
   cookie: {
     maxAge: 30 * 24 * 60 * 60 * 1000, // milliseconds in 30 days
   },
-  store: new MongoStore({clientPromise: client.connect()}),
+  store: new FileStore(),
 }));
 
 const CONTENT = process.env.LOCATION;

@@ -1,6 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 
+/**
+ * @param {string} dir - path of directory which is to be imported
+ * @param {bool} pascalCase - should be true if pascalCase is to be
+ * used for naming keys of the export object
+ * @return {object} object which should go directly in module.exports
+ *
+ * @example
+ *
+ *  module.exports = customRequireDirectory(__dirname,false);
+ */
 function customRequireDirectory(dir, pascalCase = false) {
   const mp = {};
   const fileNames = fs.readdirSync(dir);

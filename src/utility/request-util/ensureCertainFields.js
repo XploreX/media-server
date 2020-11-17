@@ -13,6 +13,4 @@ function ensureCertainFields(query, keys) {
   }
 }
 
-module.exports = {
-  ensureCertainFields: ensureCertainFields,
-};
+module.exports = ensureCertainFields;

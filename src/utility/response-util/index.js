@@ -1,4 +1,4 @@
-const root = require(__dirname + '/../config').root;
+const root = require(__dirname + '/../../config').root;
 const customRequireDirectory = require(root +
     '/utility/customRequireDirectory');
 

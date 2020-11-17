@@ -13,6 +13,4 @@ function getSuccessResponse(data) {
   return response;
 }
 
-module.exports = {
-  getSuccessResponse: getSuccessResponse,
-};
+module.exports = getSuccessResponse;

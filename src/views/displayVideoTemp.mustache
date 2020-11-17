@@ -50,7 +50,7 @@
     <script>
         $(document).ready(() => {
             const video = document.querySelector('video');
-            axios.get('/video/get-current-time', {
+            axios.get('/api/video/get-current-time', {
                 params: {
                     source: '{{{videoSource}}}'
                 }
@@ -75,7 +75,7 @@
                 else {
                     lastCurrentTime = currentTime;
                 }
-                return axios.post('/video/update-current-time', {
+                return axios.post('/api/video/update-current-time', {
                     source: "{{{videoSource}}}",
                     currentTime: currentTime,
                 }, {

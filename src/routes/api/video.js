@@ -1,7 +1,7 @@
 const express = require('express');
 const {StatusCodes} = require('http-status-codes');
 
-const root = require(__dirname + '/../config').root;
+const root = require(__dirname + '/../../config').root;
 const utility = require(root + '/utility');
 
 // eslint-disable-next-line new-cap

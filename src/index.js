@@ -6,7 +6,7 @@ const FileStore = require('session-file-store')(session);
 require('dotenv').config();
 
 const config = require(__dirname + '/config');
-const videoRouter = require(config.root + '/routes/video');
+const apiRouter = require(config.root + '/routes/api');
 const contentRouter = require(config.root + '/routes/content');
 
 const app = express();
@@ -29,7 +29,7 @@ app.use(session({
 
 morganBody(app, {logAllReqHeader: false});
 
-app.use('/video', videoRouter);
+app.use('/api', apiRouter);
 app.use('/', contentRouter);
 
 const CONTENT = process.env.LOCATION;

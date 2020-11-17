@@ -39,9 +39,9 @@ app.use(session({
 
 const CONTENT = process.env.LOCATION;
 const supportedFormatsReg =
-    new RegExp('\\.' + config.supportedFormats.join('|'), 'i');
-
-morganBody(app, {logAllReqHeader: true});
+    new RegExp('\\.' + '('+config.supportedFormats.join('|')+')'+'$', 'i');
+console.log(supportedFormatsReg);
+// morganBody(app, {logAllReqHeader: true});
 
 app.use('/video', videoRouter);
 
@@ -78,6 +78,7 @@ app.get('/*', (req, res, next) => {
     // we can add more mime types this way
     videoType = 'video/mp4'
     subtitleSource = fileName.replace(supportedFormatsReg, '.vtt');
+    console.log(videoSource,subtitleSource);
     res.render('displayVideoTemp.mustache', {
       videoName: videoName,
       videoSource: fileName,

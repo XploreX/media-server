@@ -10,14 +10,14 @@ const serveIndex = require('serve-index');
 const morganBody = require('morgan-body');
 const {MongoClient} = require('mongodb');
 
-require('dotenv').config()
+require('dotenv').config();
 
 const config = require(__dirname + '/config');
 const videoRouter = require(config.root + '/routes/video');
 
 // creating mongodb client
 const client =
-    new MongoClient(config.dbConnectionString, {useUnifiedTopology: true});
+  new MongoClient(config.dbConnectionString, {useUnifiedTopology: true});
 
 const app = express();
 
@@ -32,59 +32,58 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: {
-    maxAge: 30*24 * 60 * 60 * 1000  // milliseconds in 1 hour
+    maxAge: 30 * 24 * 60 * 60 * 1000, // milliseconds in 1 hour
   },
-  store: new MongoStore({clientPromise: client.connect()})
+  store: new MongoStore({clientPromise: client.connect()}),
 }));
 
 const CONTENT = process.env.LOCATION;
 const supportedFormatsReg =
-    new RegExp('\\.' + '('+config.supportedFormats.join('|')+')'+'$', 'i');
+  new RegExp('\\.' + '(' + config.supportedFormats.join('|') + ')' + '$', 'i');
 morganBody(app, {logAllReqHeader: true});
 
 app.use('/video', videoRouter);
 
 app.get('/*', serveIndex(CONTENT, {
-          icons: true,
-          filter: function(file, pos, list, dir) {
-            // console.log(arguments);
-            return (
-                (fs.existsSync(path.join(dir, file)) &&
-                 fs.lstatSync(path.join(dir, file)).isDirectory()) ||
-                supportedFormatsReg.test(file));
-          }
-        }));
+  icons: true,
+  filter: function(file, pos, list, dir) {
+    // console.log(arguments);
+    return (
+      (fs.existsSync(path.join(dir, file)) &&
+        fs.lstatSync(path.join(dir, file)).isDirectory()) ||
+      supportedFormatsReg.test(file));
+  },
+}));
 
 app.use('/public', express.static(CONTENT));
 
 
 app.get('/*', (req, res, next) => {
   req.url = decodeURI(req.url);
-  let absoluteFilePath = path.join(CONTENT, unescape(req.url))
-  console.log(absoluteFilePath)
+  const absoluteFilePath = path.join(CONTENT, unescape(req.url));
+  console.log(absoluteFilePath);
   // added a 404 when the url is invalid
   if (!fs.existsSync(absoluteFilePath)) {
-    res.sendStatus(StatusCodes.NOT_FOUND)
-  }
-  else {
+    res.sendStatus(StatusCodes.NOT_FOUND);
+  } else {
     req.url = path.join('public', req.url);
     console.log(req.url);
-    let fileName = '/' + req.url;
-    let videoName = path.basename(fileName);
-    let videoSource = fileName;
-    let subtitleSource = ''
-    let videoType = ''
+    const fileName = '/' + req.url;
+    const videoName = path.basename(fileName);
+    const videoSource = fileName;
+    let subtitleSource = '';
+    let videoType = '';
     // we can add more mime types this way
-    videoType = 'video/mp4'
+    videoType = 'video/mp4';
     subtitleSource = fileName.replace(supportedFormatsReg, '.vtt');
-    console.log(videoSource,subtitleSource);
+    console.log(videoSource, subtitleSource);
     res.render('displayVideoTemp.mustache', {
       videoName: videoName,
       videoSource: fileName,
       videoType: videoType,
-      subtitleSource: subtitleSource
+      subtitleSource: subtitleSource,
     });
   }
-})
+});
 
 module.exports = app;

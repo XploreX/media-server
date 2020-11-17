@@ -4,16 +4,20 @@
   "description": "A simple server to stream media content",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint '**/*.js?(x)'",
+    "fix-lint": "eslint --fix '**/*.js?(x)'"
   },
   "bin": "server.js",
   "pkg": {
     "assets": "./src/**",
-     "targets": [
-        "node14-linux-x64","node14-win-x64","node14-macos-x64"
-      ]
+    "targets": [
+      "node14-linux-x64",
+      "node14-win-x64",
+      "node14-macos-x64"
+    ]
   },
-   "keywords": [
+  "keywords": [
     "streaming",
     "local",
     "server"
@@ -31,5 +35,9 @@
     "mustache": "^4.0.1",
     "mustache-express": "^1.3.0",
     "serve-index": "^1.9.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.13.0",
+    "eslint-config-google": "^0.14.0"
   }
 }

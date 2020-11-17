@@ -63,11 +63,19 @@
                     console.log(error);
                 });
 
-
+            let lastCurrentTime = 0;
             function updateCurrentTime() {
+                let currentTime = video.currentTime;
+                if(currentTime === lastCurrentTime)
+                {
+                    return;
+                }
+                else {
+                    lastCurrentTime = currentTime;
+                }
                 return axios.post('/video/update-current-time', {
                     source: "{{{videoSource}}}",
-                    currentTime: video.currentTime,
+                    currentTime: currentTime,
                 }, {
 
                 })
@@ -82,7 +90,7 @@
                     })
             }
 
-            setInterval(updateCurrentTime, 10000); //call setInterval function every 10s
+            video.onplay = setInterval(updateCurrentTime, 10*1000); //call setInterval function every 10s
 
         })
     </script>

@@ -5,5 +5,6 @@ module.exports = Object.freeze({
         'mp4',
         'mkv',
         'avi'
-    ] 
+    ],
+    dbConnectionString : process.env.DB_CONNECTION_STRING || 'mongodb://localhost:27017' 
 })

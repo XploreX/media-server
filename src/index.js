@@ -32,7 +32,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: {
-    maxAge: 1 * 60 * 60 * 1000  // milliseconds in 1 hour
+    maxAge: 30*24 * 60 * 60 * 1000  // milliseconds in 1 hour
   },
   store: new MongoStore({clientPromise: client.connect()})
 }));
@@ -40,8 +40,7 @@ app.use(session({
 const CONTENT = process.env.LOCATION;
 const supportedFormatsReg =
     new RegExp('\\.' + '('+config.supportedFormats.join('|')+')'+'$', 'i');
-console.log(supportedFormatsReg);
-// morganBody(app, {logAllReqHeader: true});
+morganBody(app, {logAllReqHeader: true});
 
 app.use('/video', videoRouter);
 

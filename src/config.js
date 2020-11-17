@@ -6,5 +6,5 @@ module.exports = Object.freeze({
         'mkv',
         'avi'
     ],
-    dbConnectionString : process.env.DB_CONNECTION_STRING || 'mongodb://localhost:27017' 
+    dbConnectionString : process.env.DB_CONNECTION_STRING || 'mongodb://localhost:27017/MediaServer' 
 })

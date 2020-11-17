@@ -14,6 +14,7 @@ require('dotenv').config()
 
 const config = require(__dirname + '/config');
 const videoRouter = require(config.root + '/routes/video');
+const videoService = require(config.root + '/services/video');
 
 // creating mongodb client
 const client =
@@ -32,14 +33,14 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: {
-    maxAge: 30*24 * 60 * 60 * 1000  // milliseconds in 1 hour
+    maxAge: 30*24 * 60 * 60 * 1000  // milliseconds in 30 days
   },
   store: new MongoStore({clientPromise: client.connect()})
 }));
 
 const CONTENT = process.env.LOCATION;
-const supportedFormatsReg =
-    new RegExp('\\.' + '('+config.supportedFormats.join('|')+')'+'$', 'i');
+const supportedFormatsReg = videoService.supportedFormatsReg;
+
 morganBody(app, {logAllReqHeader: true});
 
 app.use('/video', videoRouter);
@@ -85,6 +86,6 @@ app.get('/*', (req, res, next) => {
       subtitleSource: subtitleSource
     });
   }
-})
+});
 
 module.exports = app;

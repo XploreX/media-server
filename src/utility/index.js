@@ -1,4 +1,4 @@
-module.exports = {
-    requestUtil : require('./request'),
-    responseUtil : require('./response')
-};
+const root = require(__dirname+'/../config').root;
+const customRequireDirectory = require(root+'/utility/customRequireDirectory');
+
+module.exports = customRequireDirectory(__dirname);

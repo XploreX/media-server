@@ -42,8 +42,8 @@ router.get('/get-current-time', (req, res, next) => {
     data.currentTime = req.session.videos[i].currentTime;
   }
   res
-    .status(StatusCodes.OK)
-    .json(utility.responseUtil.getSuccessResponse(data));
+      .status(StatusCodes.OK)
+      .json(utility.responseUtil.getSuccessResponse(data));
 });
 
 module.exports = router;

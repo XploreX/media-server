@@ -18,15 +18,15 @@ app.engine('mustache', mustacheExpress());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(
-  session({
-    secret: [config.sessionSecret],
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000, // milliseconds in 30 days
-    },
-    store: new FileStore(),
-  }),
+    session({
+      secret: [config.sessionSecret],
+      resave: false,
+      saveUninitialized: true,
+      cookie: {
+        maxAge: 30 * 24 * 60 * 60 * 1000, // milliseconds in 30 days
+      },
+      store: new FileStore(),
+    }),
 );
 
 morganBody(app, {logAllReqHeader: false});

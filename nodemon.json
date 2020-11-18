@@ -1,4 +1,4 @@
 {
   "ignore": ["sessions/*"],
-  "ext" : "js,json,mustache"
+  "ext": "js,json,mustache"
 }

@@ -34,4 +34,5 @@ jobs:
           github_token: ${{ secrets.github_token }}
           # Enable linters
           auto_fix: true
+          prettier: true
           eslint: true

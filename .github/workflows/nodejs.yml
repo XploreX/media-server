@@ -27,16 +27,3 @@ jobs:
 
       - name: Build
         run: npm run build --if-present
-
-      - name: Run Lint
-        run: npm run fix-lint
-        
-      - name: Commit changes
-        uses: EndBug/add-and-commit@v5
-        with:
-          author_name: npm linter
-          author_email: lint@mediaserver.com
-          message: "Lint Commit"
-          add: "."
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

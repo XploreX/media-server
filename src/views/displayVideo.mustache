@@ -13,7 +13,7 @@
     </title>
 </head>
 
-  <body class="container-fluid pt-3 bg-dark text-light">
+<body class="container-fluid pt-3 bg-dark text-light">
     <div class="container">
         <div class="row">
             <div class="col">
@@ -24,15 +24,15 @@
         </div>
         <div class="row">
             <div class="col">
-              <div class="embed-responsive embed-responsive-16by9">
-                <video width=1280 controls>
-                    <source src="{{videoSource}}" type="{{videoType}}">
-                    <track src="{{subtitleSource}}" kind="subtitles" srclang="en" label="English" default />
-                    <p>
-                        Your browser doesn't support HTML5 video.
-                    </p>
-                </video>
-              </div>
+                <div class="embed-responsive embed-responsive-16by9">
+                    <video width=1280 controls>
+                        <source src="{{videoSource}}" type="{{videoType}}">
+                        <track src="{{subtitleSource}}" kind="subtitles" srclang="en" label="English" default />
+                        <p>
+                            Your browser doesn't support HTML5 video.
+                        </p>
+                    </video>
+                </div>
             </div>
         </div>
     </div>
@@ -48,6 +48,20 @@
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
+        const video = document.querySelector('video');
+        document.addEventListener('keydown', (event) => {
+            //console.log(event);
+            if (event.isComposing || event.keyCode == 229) {
+                return;
+            }
+            if (event.key === 'p') {
+                if (video.paused)
+                    video.play();
+                else video.pause();
+            }
+        });
+    </script>
+    <script>
         $(document).ready(() => {
             const video = document.querySelector('video');
             axios.get('/api/video/get-current-time', {
@@ -57,7 +71,7 @@
             })
                 .then((response) => {
                     let currentTimeReceived = response.data.data.currentTime;
-                    if (currentTimeReceived >0 && confirm("Resume video ?")) {
+                    if (currentTimeReceived > 0 && confirm("Resume video ?")) {
                         video.currentTime = currentTimeReceived;
                     }
                 })
@@ -68,8 +82,7 @@
             let lastCurrentTime = 0;
             function updateCurrentTime() {
                 let currentTime = video.currentTime;
-                if(currentTime === lastCurrentTime)
-                {
+                if (currentTime === lastCurrentTime) {
                     return;
                 }
                 else {
@@ -92,7 +105,7 @@
                     })
             }
 
-            setInterval(updateCurrentTime, 5*1000); //call setInterval function every 10s
+            setInterval(updateCurrentTime, 5 * 1000); //call setInterval function every 10s
 
         })
     </script>

@@ -28,11 +28,15 @@ jobs:
       - name: Build
         run: npm run build --if-present
 
-      - name: Run linters
-        uses: wearerequired/lint-action@v1
+      - name: Run Lint
+        run: npm run fix-lint
+        
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v5
         with:
-          github_token: ${{ secrets.github_token }}
-          # Enable linters
-          auto_fix: true
-          prettier: true
-          eslint: true
+          author_name: npm linter
+          author_email: lint@mediaserver.com
+          message: "Lint Commit"
+          add: "."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

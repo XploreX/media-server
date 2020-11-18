@@ -45,7 +45,7 @@ router.get('/*', (req, res, next) => {
     videoType = 'video/mp4';
     subtitleSource = fileName.replace(supportedVideoFormatsReg, '.vtt');
     // console.log(videoSource, subtitleSource);
-    res.render('displayVideoTemp.mustache', {
+    res.render('displayVideo.mustache', {
       videoName: videoName,
       videoSource: videoSource,
       videoType: videoType,

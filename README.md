@@ -43,6 +43,15 @@ Media content directory path will be taken from value of `location` argument
 
 If both `-l` and `--location` argument are specified , media content directory path will be taken as value of `--location` argument
 
+After running the application , you will see something like this
+
+```
+server is up
+listening at http://xxx.xxx.xx.xxx:3000
+```
+where `xxx.xxx.xx.xxx` is IP address of the device running the application and thus serving the content . 
+Now to access the media content , just open this link(`http://xxx.xxx.xx.xxx:3000`) in any device connected to the same network as
+the device running the application.
 
 ## Installation
 Just download the release version respective to your OS and start it like given below

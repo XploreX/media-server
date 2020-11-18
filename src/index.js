@@ -3,6 +3,7 @@ const session = require('express-session');
 const mustacheExpress = require('mustache-express');
 const morganBody = require('morgan-body');
 const FileStore = require('session-file-store')(session);
+const favicon = require('serve-favicon');
 
 const config = require(__dirname + '/config');
 const apiRouter = require(config.root + '/routes/api');
@@ -30,6 +31,8 @@ app.use(
 );
 
 morganBody(app, {logAllReqHeader: false});
+
+app.use(favicon(config.root + '/public/favicon.ico'));
 
 app.get('/', (req, res) => {
   res.redirect('/content');

@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint '**/*.js?(x)'",
-    "fix-lint": "eslint --fix '**/*.js?(x)'"
+    "lint": "eslint .",
+    "fix-lint": "prettier --write . && eslint --fix ."
   },
   "bin": "server.js",
   "pkg": {
@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "eslint": "^7.13.0",
-    "eslint-config-google": "^0.14.0"
+    "eslint-config-google": "^0.14.0",
+    "prettier": "^2.1.2"
   }
 }

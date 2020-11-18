@@ -1,5 +1,3 @@
 {
-    "ignore" : [
-        "sessions/*"
-    ]
+  "ignore": ["sessions/*"]
 }

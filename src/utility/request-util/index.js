@@ -1,5 +1,5 @@
 const root = require(__dirname + '/../../config').root;
 const customRequireDirectory = require(root +
-    '/utility/customRequireDirectory');
+  '/utility/customRequireDirectory');
 
 module.exports = customRequireDirectory(__dirname);

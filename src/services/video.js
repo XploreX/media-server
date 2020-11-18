@@ -2,9 +2,10 @@ const fs = require('fs');
 
 const config = require(__dirname + '/../config');
 
-const supportedVideoFormatsReg =
-  new RegExp('\\.' + '(' + config.supportedVideoFormats.join('|') + ')' +
-    '$', 'i');
+const supportedVideoFormatsReg = new RegExp(
+    '\\.' + '(' + config.supportedVideoFormats.join('|') + ')' + '$',
+    'i',
+);
 
 /**
  * @param {string} absoluteVideoPath - absolute path of the file which needs
@@ -13,10 +14,11 @@ const supportedVideoFormatsReg =
  * @return {bool} - returns truth value for the given absolute path
  */
 function isSupportedVideo(absoluteVideoPath) {
-  return fs.existsSync(absoluteVideoPath) &&
-    supportedVideoFormatsReg.test(absoluteVideoPath);
+  return (
+    fs.existsSync(absoluteVideoPath) &&
+    supportedVideoFormatsReg.test(absoluteVideoPath)
+  );
 }
-
 
 module.exports = {
   supportedVideoFormatsReg: supportedVideoFormatsReg,

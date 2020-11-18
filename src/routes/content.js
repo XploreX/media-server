@@ -6,14 +6,15 @@ const serveIndex = require('serve-index');
 
 const config = require(__dirname + '/../config');
 const services = require(config.root + '/services');
+const userSettings = require(config.root + '/user-settings');
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
-const CONTENT = process.env.LOCATION;
+const content = userSettings.location;
 const supportedVideoFormatsReg = services.video.supportedVideoFormatsReg;
 
-router.get('/*', serveIndex(CONTENT, {
+router.get('/*', serveIndex(content, {
   icons: true,
   filter: function(file, pos, list, dir) {
     // console.log(arguments);
@@ -28,7 +29,7 @@ router.get('/*', serveIndex(CONTENT, {
 // route to handle video files
 router.get('/*', (req, res, next) => {
   req.url = decodeURI(req.url);
-  const absoluteFilePath = path.join(CONTENT, unescape(req.url));
+  const absoluteFilePath = path.join(content, unescape(req.url));
   // console.log(absoluteFilePath);
   if (!services.video.isSupportedVideo(absoluteFilePath)) {
     next();

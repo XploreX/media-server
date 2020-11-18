@@ -3,11 +3,11 @@ const session = require('express-session');
 const mustacheExpress = require('mustache-express');
 const morganBody = require('morgan-body');
 const FileStore = require('session-file-store')(session);
-require('dotenv').config();
 
 const config = require(__dirname + '/config');
 const apiRouter = require(config.root + '/routes/api');
 const contentRouter = require(config.root + '/routes/content');
+const userSettings = require(config.root + '/user-settings');
 
 const app = express();
 
@@ -32,8 +32,8 @@ morganBody(app, {logAllReqHeader: false});
 app.use('/api', apiRouter);
 app.use('/', contentRouter);
 
-const CONTENT = process.env.LOCATION;
-app.use('/public', express.static(CONTENT));
+const content = userSettings.location;
+app.use('/public', express.static(content));
 
 
 module.exports = app;

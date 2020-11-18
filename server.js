@@ -1,7 +1,21 @@
 const {networkInterfaces} = require('os');
 const path = require('path');
 
+const parseArgs = require('minimist');
+require('dotenv').config();
+
+const userSettings = require(__dirname + '/src/user-settings');
+const argv = parseArgs(process.argv.slice(2));
+
 const nets = networkInterfaces();
+
+if ('l' in argv) {
+  userSettings.location = argv.l;
+}
+
+if ('location' in argv) {
+  userSettings.location = argv.location;
+}
 
 const app = require(path.join(__dirname, 'src', 'index.js'));
 

@@ -1,5 +1,5 @@
 {
-  "name": "MediaServer",
+  "name": "media-server",
   "version": "1.0.0",
   "description": "A simple server to stream media content",
   "main": "server.js",

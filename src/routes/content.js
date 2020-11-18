@@ -15,18 +15,18 @@ const content = userSettings.location;
 const supportedVideoFormatsReg = services.video.supportedVideoFormatsReg;
 
 router.get(
-    '/*',
-    serveIndex(content, {
-      icons: true,
-      filter: function(file, pos, list, dir) {
+  '/*',
+  serveIndex(content, {
+    icons: true,
+    filter: function (file, pos, list, dir) {
       // console.log(arguments);
-        return (
-          (fs.existsSync(path.join(dir, file)) &&
+      return (
+        (fs.existsSync(path.join(dir, file)) &&
           fs.lstatSync(path.join(dir, file)).isDirectory()) ||
         supportedVideoFormatsReg.test(file)
-        );
-      },
-    }),
+      );
+    },
+  }),
 );
 
 // route to handle video files

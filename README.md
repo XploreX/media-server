@@ -7,17 +7,17 @@
 ![license](https://img.shields.io/github/license/manorit2001/MediaServer)
 [![Code Style: Google](https://img.shields.io/badge/code%20style-google-blueviolet.svg)](https://github.com/google/eslint-config-google)
 
-_Tired of using pendrive to copy paste media while wanting to watch them in tv?_
-_Wish that you could watch your laptop videos in tv easily?_
+_Tired of using pendrive to copy paste media while wanting to watch them on TV?_
+_Wish you could watch your laptop videos on TV easily?_
 
 Don't worry, MediaServer has come to your rescue. It is a local media server to host your laptop contents and view it anywhere
 **(currently supports sharing mp4/mkv/avi h264 encoded videos)**
 
-In this documentation , We will refer to directory containing media content which have to be served as `media content directory`.
+In this documentation, we will refer to directory containing media content which have to be served as `media content directory`.
 
 ## How to use from source code
 
-1. Clone the repository , then open terminal in cloned repository directory and run `npm install` to install all node
+1. Clone the repository, then open terminal in cloned repository directory and run `npm install` to install all node
    modules dependencies
 2. Location of directory from which media content (videos) have to be served can be specified in one of the following ways :
    - Add environmental variable `LOCATION` having media content directory as it's value
@@ -80,7 +80,7 @@ set LOCATION=\path\to\video\directories
 
 ### MacOS
 
-`Figure out yourselves, I don't own mac.`
+`Figure out yourselves, I don't own a Mac. Jk`
 
 ## FAQs
 
@@ -113,7 +113,7 @@ optional arguments:
 
 ```
 
-## Wanna Contribute?
+## How to Contribute?
 
 - ### Fork the repo
 - ### Make your awesome changes

@@ -3,8 +3,8 @@ const fs = require('fs');
 const config = require(__dirname + '/../config');
 
 const supportedVideoFormatsReg = new RegExp(
-  '\\.' + '(' + config.supportedVideoFormats.join('|') + ')' + '$',
-  'i',
+    '\\.' + '(' + config.supportedVideoFormats.join('|') + ')' + '$',
+    'i',
 );
 
 /**

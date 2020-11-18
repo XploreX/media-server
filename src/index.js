@@ -31,8 +31,12 @@ app.use(
 
 morganBody(app, {logAllReqHeader: false});
 
+app.get('/', (req, res) => {
+  res.redirect('/content');
+});
+
 app.use('/api', apiRouter);
-app.use('/', contentRouter);
+app.use('/content', contentRouter);
 
 const content = userSettings.location;
 app.use('/public', express.static(content));

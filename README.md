@@ -11,48 +11,74 @@ _Tired of using pendrive to copy paste media while wanting to watch them on TV?_
 _Wish you could watch your laptop videos on TV easily?_
 
 Don't worry, MediaServer has come to your rescue. It is a local media server to host your laptop contents and view it anywhere
-**(currently supports sharing mp4/mkv/avi h264 encoded videos)**
+**(currently supports sharing h264 encoded videos with aac audio codec)**
+
+### Extensions allowed for video files
+
+- mp4
+- mkv
+- avi 
+
+### Extension allowed for subtitles
+
+- srt
+- vtt
 
 In this documentation, we will refer to directory containing media content which have to be served as `media content directory`.
 
-## How to use from source code
+## Installation
 
-1. Clone the repository, then open terminal in cloned repository directory and run `npm install` to install all node
-   modules dependencies
-2. Location of directory from which media content (videos) have to be served can be specified in one of the following ways :
+Just download the release version respective to your OS and start it like given below.
+
+The path to media content directory can be provided as either an environment variable or using `-l` argument.
    - Add environmental variable `LOCATION` having media content directory as it's value
    - Location can also be specified as command line argument while starting the application , if used, it will override the Location
      value provided in the `LOCATION` environment variable
 
-**Application can be started using one of the following ways**
+### Linux
 
-1.
+`LOCATION="path/to/media/folder" ./media-server-linux`
 
-```
-npm start
-```
+*OR*
 
-Media content directory path will be taken from `LOCATION` environment variable as described above ,
+`./media-server-linux -l "path/to/media/folder"`
 
-2.
+### Windows
 
 ```
-npm start -- -l path_to_consuming_media_directory
+set LOCATION=path\to\media\folder
+.\media-server-win.exe
 ```
 
-Media content directory path will be taken from value of `-l` argument.
+*OR*
 
-3.
+`.\media-server-win.exe -l "path\to\media\folder"`
 
+### MacOS
+
+`Figure out yourselves, I don't own Mac`
+
+
+## How to use from source code
+
+- Clone the repository
+
+`git clone https://github.com/manorit2001/MediaServer`
+
+- Change the directory and install node modules
 ```
-npm start -- --location=path_to_consuming
+cd MediaServer
+npm install
 ```
+- You can setup environment variables for testing by creating `.env` file and adding the content as given below or you can pass it as argument to `npm start` as explained in previous section 
 
-Media content directory path will be taken from value of `location` argument
+`LOCATION=path_to_media_content`
 
-If both `-l` and `--location` argument are specified , media content directory path will be taken as value of `--location` argument
+- Now you can start the server
 
-After running the application , you will see something like this
+`npm start`
+
+- After running the application , you will see something like this
 
 ```
 server is up
@@ -63,32 +89,13 @@ where `xxx.xxx.xx.xxx` is IP address of the device running the application and t
 Now to access the media content , just open this link(`http://xxx.xxx.xx.xxx:3000`) in any device connected to the same network as
 the device running the application.
 
-## Installation
 
-Just download the release version respective to your OS and start it like given below
-
-### Linux
-
-`LOCATION="/path/to/video/directories" ./MediaServer-linux`
-
-### Windows
-
-```
-set LOCATION=\path\to\video\directories
-.\MediaServer-win.exe
-```
-
-### MacOS
-
-`Figure out yourselves, I don't own a Mac. Jk`
 
 ## FAQs
 
-(Not asked until now, coz duh! first release)
-
 ### If videos don't work
 
-You can use the **convert.py** script with python3 to convert your videos to the required format(requires ffmpeg to be installed) and then host your converted_videos directory.
+You can use the **convert.py** script in `scripts/` with python3 to convert your videos to the required format(requires ffmpeg to be installed) and then host your converted_videos directory.
 
 Dependencies required to run `convert.py` script :
 
@@ -96,7 +103,7 @@ Dependencies required to run `convert.py` script :
 - `ffmpeg` installed and added to environmental `PATH` variable
 
 ```
-usage: convert.py [-h] [-x] [-s] [-o] [-n] [-v] location
+usage: convert.py [-h] [-x] [-s] [-f] [-o] [-n] [-v] location
 
 convert video files for using with MediaServer
 
@@ -107,10 +114,10 @@ optional arguments:
   -h, --help  show this help message and exit
   -x          if subtitles are to be extracted from the video
   -s          if subtitles are to be used from srt file available in the folder
+  -f          try faster conversion(may not work)
   -o          convert only subtitles for the videos
   -n          no subs
   -v          verbose
-
 ```
 
 ## How to Contribute?

@@ -43,5 +43,6 @@ app.use('/content', contentRouter);
 
 const content = userSettings.location;
 app.use('/public', express.static(content));
+app.use('/static', express.static(config.root + '/../assets'));
 
 module.exports = app;

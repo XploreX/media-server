@@ -11,8 +11,7 @@
     "bin": "server.js",
     "pkg": {
         "assets": [
-            "./src/**",
-            "./assets/**"
+            "./src/**"
         ],
         "targets": [
             "node14-linux-x64",

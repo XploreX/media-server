@@ -62,6 +62,8 @@ set LOCATION=path\to\media\folder
 
 `Figure out yourselves, I don't own Mac`
 
+PS: binaries are their for macOS too
+
 ## How to use from source code
 
 - Clone the repository

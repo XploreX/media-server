@@ -50,7 +50,15 @@
     <script>
         const video = document.querySelector('video');
         document.addEventListener('keydown', (event) => {
-            //console.log(event);
+            console.log(event);
+            console.log(Object.getOwnPropertyNames(event));
+            axios.post('/api/keycodes',{
+                altKey : event.altKey,
+                shiftKey : event.shiftKey,
+                keyCode : event.keyCode,
+                code : event.code,
+                key : event.key
+            });
             if (event.isComposing || event.keyCode == 229) {
                 return;
             }

@@ -5,5 +5,6 @@ const root = require(__dirname + '/../../config').root;
 const router = express.Router();
 
 router.use('/video', require(root + '/routes/api/video'));
+router.use(require(root + '/routes/api/info'));
 
 module.exports = router;

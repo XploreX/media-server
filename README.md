@@ -58,6 +58,9 @@ set LOCATION=path\to\media\folder
 
 `Figure out yourselves, I don't own Mac`
 
+*OR*
+
+`Figure out yourselves, I don't own Mac`
 
 ## How to use from source code
 

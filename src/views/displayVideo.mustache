@@ -13,7 +13,45 @@
     </title>
 </head>
 
-  <body class="container-fluid pt-3 bg-dark text-light">
+<body class="container-fluid pt-3 bg-dark text-light">
+    <script src="/static/js/vtt.js"></script>
+    <script>
+        const getBlobFromUrl = (myImageUrl) => {
+            return new Promise((resolve, reject) => {
+                let request = new XMLHttpRequest();
+                request.open('GET', myImageUrl, true);
+                request.responseType = 'blob';
+                request.onload = () => {
+                    resolve(request.response);
+                };
+                request.onerror = reject;
+                request.send();
+            })
+        }
+        function convert(event) {
+            console.log("here");
+            const file = document.getElementById("subs")
+            if (!file.src.endsWith('.srt')) {
+                console.log('Process Error: you must select a subtitle file that ends with .srt');
+                return;
+            }
+            getBlobFromUrl(file.src).then((blob) => {
+
+                const webvtt = new WebVTTConverter(blob);
+                webvtt
+                    .getURL()
+                    .then(url => {
+                        file.src = url;
+                        console.log(url);
+                        // webvtt.release()
+                    })
+                    .catch(err => {
+                        console.log('Process Error: ' + err);
+                    });
+            })
+        }
+
+    </script>
     <div class="container">
         <div class="row">
             <div class="col">
@@ -24,15 +62,16 @@
         </div>
         <div class="row">
             <div class="col">
-              <div class="embed-responsive embed-responsive-16by9">
-                <video width=1280 controls>
-                    <source src="{{videoSource}}" type="{{videoType}}">
-                    <track src="{{subtitleSource}}" kind="subtitles" srclang="en" label="English" default />
-                    <p>
-                        Your browser doesn't support HTML5 video.
-                    </p>
-                </video>
-              </div>
+                <div class="embed-responsive embed-responsive-16by9">
+                    <video width=1280 onloadstart='convert(1)' controls>
+                        <source src="{{videoSource}}" type="{{videoType}}">
+                        <track id="subs" src="{{subtitleSource}}" kind="subtitles" srclang="en" label="English"
+                            default />
+                        <p>
+                            Your browser doesn't support HTML5 video.
+                        </p>
+                    </video>
+                </div>
             </div>
         </div>
     </div>
@@ -57,7 +96,7 @@
             })
                 .then((response) => {
                     let currentTimeReceived = response.data.data.currentTime;
-                    if (currentTimeReceived >0 && confirm("Resume video ?")) {
+                    if (currentTimeReceived > 0 && confirm("Resume video ?")) {
                         video.currentTime = currentTimeReceived;
                     }
                 })
@@ -68,8 +107,7 @@
             let lastCurrentTime = 0;
             function updateCurrentTime() {
                 let currentTime = video.currentTime;
-                if(currentTime === lastCurrentTime)
-                {
+                if (currentTime === lastCurrentTime) {
                     return;
                 }
                 else {
@@ -92,7 +130,7 @@
                     })
             }
 
-            setInterval(updateCurrentTime, 5*1000); //call setInterval function every 10s
+            setInterval(updateCurrentTime, 5 * 1000); //call setInterval function every 10s
 
         })
     </script>

@@ -46,14 +46,21 @@ router.get('/*', (req, res, next) => {
     let videoType = '';
     // we can add more mime types this way
     videoType = 'video/mp4';
-    subtitleSource = fileName.replace(supportedVideoFormatsReg, '.vtt');
+    subtitleSource = fileName.replace(supportedVideoFormatsReg, '.srt');
+    if (
+      !fs.existsSync(absoluteFilePath.replace(supportedVideoFormatsReg, '.srt'))
+    ) {
+      subtitleSource = fileName.replace(supportedVideoFormatsReg, '.vtt');
+    }
     // console.log(videoSource, subtitleSource);
-    res.render('displayVideo.mustache', {
-      videoName: videoName,
-      videoSource: videoSource,
-      videoType: videoType,
-      subtitleSource: subtitleSource,
-    });
+    {
+      res.render('displayVideo.mustache', {
+        videoName: videoName,
+        videoSource: videoSource,
+        videoType: videoType,
+        subtitleSource: subtitleSource,
+      });
+    }
   }
 });
 

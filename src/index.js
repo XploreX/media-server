@@ -30,7 +30,7 @@ app.use(
     }),
 );
 
-morganBody(app, {logAllReqHeader: false});
+morganBody(app, {logAllReqHeader: true});
 
 app.use(favicon(config.root + '/public/favicon.ico'));
 

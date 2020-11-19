@@ -101,7 +101,7 @@
             if (event.isComposing || event.keyCode == 229) {
                 return;
             }
-            if (event.key === 'p') {
+            if (event.key === 'p' || event.key === 'MediaPlayPause') {
                 if (video.paused)
                     video.play();
                 else video.pause();

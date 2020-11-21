@@ -8,20 +8,27 @@ const userSettings = require(__dirname + '/src/user-settings');
 const argv = parseArgs(process.argv.slice(2));
 
 const nets = networkInterfaces();
+let gui = true;
 
 if ('l' in argv) {
   userSettings.location = argv.l;
+  gui = false;
 }
 
 if ('location' in argv) {
   userSettings.location = argv.location;
+  gui = false;
+}
+if ('g' in argv || userSettings.location == undefined) {
+  gui = true;
 }
 
 const app = require(path.join(__dirname, 'src', 'index.js'));
+const admin = require(path.join(__dirname, 'src', 'admin.js'));
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log('server is up');
   for (const name of Object.keys(nets)) {
     for (const net of nets[name]) {
@@ -32,3 +39,16 @@ app.listen(PORT, () => {
     }
   }
 });
+
+if (gui) {
+  server.close();
+  const adminServer = admin.listen(PORT + 1, 'localhost', () => {
+    console.log('admin server is up');
+    console.log(
+        'listening at http://' +
+        adminServer.address().address +
+        ':' +
+        adminServer.address().port,
+    );
+  });
+}

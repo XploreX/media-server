@@ -1,10 +1,10 @@
 # MediaServer
 
-![build](https://img.shields.io/github/workflow/status/manorit2001/MediaServer/Caching%20with%20npm)
-![issues](https://img.shields.io/github/issues/manorit2001/MediaServer)
-![forks](https://img.shields.io/github/forks/manorit2001/MediaServer)
-![stars](https://img.shields.io/github/stars/manorit2001/MediaServer)
-![license](https://img.shields.io/github/license/manorit2001/MediaServer)
+[![build](https://img.shields.io/github/workflow/status/XploreX/MediaServer/Caching%20with%20npm)](https://github.com/XploreX/MediaServer/actions)
+[![issues](https://img.shields.io/github/issues/XploreX/MediaServer)](https://github.com/XploreX/MediaServer/issues)
+[![forks](https://img.shields.io/github/forks/XploreX/MediaServer)](https://github.com/XploreX/MediaServer/network/members)
+[![stars](https://img.shields.io/github/stars/XploreX/MediaServer)](https://github.com/XploreX/MediaServer/stargazers)
+[![license](https://img.shields.io/github/license/XploreX/MediaServer)](https://github.com/XploreX/MediaServer/blob/master/LICENSE)
 [![Code Style: Google](https://img.shields.io/badge/code%20style-google-blueviolet.svg)](https://github.com/google/eslint-config-google)
 
 _Tired of using pendrive to copy paste media while wanting to watch them on TV?_
@@ -36,59 +36,63 @@ The path to media content directory can be provided as either an environment var
      value provided in the `LOCATION` environment variable
 
 ### Linux
-
-`LOCATION="path/to/media/folder" ./media-server-linux`
-
-*OR*
-
-`./media-server-linux -l "path/to/media/folder"`
-
+   ```
+   LOCATION="path/to/media/folder" ./media-server-linux
+   ```
+   *OR*
+   ```
+   ./media-server-linux -l "path/to/media/folder"
+```
 ### Windows
 
-```
-set LOCATION=path\to\media\folder
-.\media-server-win.exe
-```
+   ```
+   set LOCATION=path\to\media\folder
+   .\media-server-win.exe
+   ```
 
-*OR*
-
-`.\media-server-win.exe -l "path\to\media\folder"`
+   *OR*
+   ```
+   .\media-server-win.exe -l "path\to\media\folder"
+   ```
 
 ### MacOS
+   ```
+   Figure out yourselves, I don't own Mac
+   ```
 
-`Figure out yourselves, I don't own Mac`
-
-*OR*
-
-`Figure out yourselves, I don't own Mac`
-
-PS: binaries are their for macOS too
+   *OR*
+   ```
+   Figure out yourselves, I don't own Mac
+   ```
+   PS: binaries are their for macOS too
 
 ## How to use from source code
 
 - Clone the repository
-
-`git clone https://github.com/manorit2001/MediaServer`
-
+   ```
+   git clone https://github.com/manorit2001/MediaServer`
+   ```
 - Change the directory and install node modules
-```
-cd MediaServer
-npm install
-```
+   ```
+   cd MediaServer
+   npm install
+   ```
 - You can setup environment variables for testing by creating `.env` file and adding the content as given below or you can pass it as argument to `npm start` as explained in previous section 
-
-`LOCATION=path_to_media_content`
-
+   ```
+   LOCATION=path_to_media_content
+   ```
 - Now you can start the server
 
-`npm start`
+   `npm start` *OR* `node server.js`
+
+   For help you can use `node server.js -h`
 
 - After running the application , you will see something like this
 
-```
-server is up
-listening at http://xxx.xxx.xx.xxx:3000
-```
+   ```
+   server is up
+   listening at http://xxx.xxx.xx.xxx:3000
+   ```
 
 where `xxx.xxx.xx.xxx` is IP address of the device running the application and thus serving the content .
 Now to access the media content , just open this link(`http://xxx.xxx.xx.xxx:3000`) in any device connected to the same network as
@@ -133,8 +137,8 @@ optional arguments:
 
 ## Noticed any bugs or have any suggestions?
 
-Feel free to open up issue @ https://github.com/manorit2001/MediaServer/issues and we will try to work on them
+Feel free to open up [issue](https://github.com/XploreX/MediaServer/issues) and we will try to work on them
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0. See the [license](https://github.com/manorit2001/MediaServer/blob/master/LICENSE).
+This project is licensed under the GNU General Public License v3.0. See the [license](https://github.com/XploreX/MediaServer/blob/master/LICENSE).

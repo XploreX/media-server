@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
-const mustacheExpress = require('mustache-express');
 const morganBody = require('morgan-body');
+const mustacheExpress = require('mustache-express');
 const FileStore = require('session-file-store')(session);
 const favicon = require('serve-favicon');
 
@@ -30,14 +30,14 @@ app.use(
     }),
 );
 
-morganBody(app, {logAllReqHeader: true});
-
 app.use(favicon(config.root + '/public/favicon.ico'));
 
 app.get('/', (req, res) => {
   res.redirect('/content');
 });
 
+if (userSettings.argv.v == 1) morganBody(app, {logAllReqHeader: false});
+if (userSettings.argv.v >= 2) morganBody(app, {logAllReqHeader: true});
 app.use('/api', apiRouter);
 app.use('/content', contentRouter);
 

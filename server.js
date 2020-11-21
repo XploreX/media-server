@@ -1,32 +1,50 @@
 const {networkInterfaces} = require('os');
 const path = require('path');
 
-const parseArgs = require('minimist');
+const yargs = require('yargs/yargs');
+const {hideBin} = require('yargs/helpers');
 require('dotenv').config();
 
 const userSettings = require(__dirname + '/src/user-settings');
-const argv = parseArgs(process.argv.slice(2));
+// const argv = parseArgs(process.argv.slice(2));
 
 const nets = networkInterfaces();
 let gui = true;
 
-if ('l' in argv) {
+const argv = yargs(hideBin(process.argv))
+    .scriptName('media-server')
+    .usage('$0 [args]', 'A localhost Media Server', (yargs) => {
+      yargs.option('verbose', {
+        alias: 'v',
+        type: 'boolean',
+        description: 'Run with verbose logging',
+        count: true,
+      });
+      yargs.option('location', {
+        alias: 'l',
+        type: 'string',
+        description: 'the path to media content directory',
+      });
+      yargs.option('port', {
+        alias: 'p',
+        type: 'number',
+        description: 'the port to run server on',
+      });
+    })
+    .alias('h', 'help')
+    .version(false).argv;
+
+if (argv.l) {
   userSettings.location = argv.l;
   gui = false;
 }
 
-if ('location' in argv) {
-  userSettings.location = argv.location;
-  gui = false;
-}
-if ('g' in argv || userSettings.location == undefined) {
-  gui = true;
-}
+userSettings.argv = argv;
 
 const app = require(path.join(__dirname, 'src', 'index.js'));
 const admin = require(path.join(__dirname, 'src', 'admin.js'));
 
-const PORT = process.env.PORT || 3000;
+const PORT = argv.port || process.env.PORT || 3000;
 
 const server = app.listen(PORT, () => {
   console.log('server is up');

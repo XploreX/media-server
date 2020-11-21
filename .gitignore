@@ -1,5 +1,6 @@
 node_modules/
 releases/
+releases_x86/
 pkg_files/
 sessions/
 .vscode/

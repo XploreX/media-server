@@ -37,7 +37,9 @@ if (argv.l) {
   userSettings.location = argv.l;
 }
 
-const app = require(path.join(__dirname, 'src', 'index.js'))(argv);
+userSettings.argv = argv;
+
+const app = require(path.join(__dirname, 'src', 'index.js'));
 
 const PORT = argv.port || process.env.PORT || 3000;
 

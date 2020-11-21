@@ -36,16 +36,13 @@ app.get('/', (req, res) => {
   res.redirect('/content');
 });
 
-const argvHandler = function(argv) {
-  if (argv.v == 1) morganBody(app, {logAllReqHeader: false});
-  if (argv.v >= 2) morganBody(app, {logAllReqHeader: true});
-  app.use('/api', apiRouter);
-  app.use('/content', contentRouter);
+if (userSettings.argv.v == 1) morganBody(app, {logAllReqHeader: false});
+if (userSettings.argv.v >= 2) morganBody(app, {logAllReqHeader: true});
+app.use('/api', apiRouter);
+app.use('/content', contentRouter);
 
-  const content = userSettings.location;
-  app.use('/public', express.static(content));
-  app.use('/static', express.static(config.root + '/assets'));
-  return app;
-};
+const content = userSettings.location;
+app.use('/public', express.static(content));
+app.use('/static', express.static(config.root + '/assets'));
 
-module.exports = argvHandler;
+module.exports = app;

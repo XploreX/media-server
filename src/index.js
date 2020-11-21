@@ -1,7 +1,6 @@
 const express = require('express');
 const session = require('express-session');
 const mustacheExpress = require('mustache-express');
-const morganBody = require('morgan-body');
 const FileStore = require('session-file-store')(session);
 const favicon = require('serve-favicon');
 
@@ -29,8 +28,6 @@ app.use(
       store: new FileStore(),
     }),
 );
-
-morganBody(app, {logAllReqHeader: true});
 
 app.use(favicon(config.root + '/public/favicon.ico'));
 

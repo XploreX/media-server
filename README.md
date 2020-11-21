@@ -137,8 +137,8 @@ optional arguments:
 
 ## Noticed any bugs or have any suggestions?
 
-Feel free to open up issue @ https://github.com/manorit2001/MediaServer/issues and we will try to work on them
+Feel free to open up [issue](https://github.com/XploreX/MediaServer/issues) and we will try to work on them
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0. See the [license](https://github.com/manorit2001/MediaServer/blob/master/LICENSE).
+This project is licensed under the GNU General Public License v3.0. See the [license](https://github.com/XploreX/MediaServer/blob/master/LICENSE).

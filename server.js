@@ -1,6 +1,5 @@
 const {networkInterfaces} = require('os');
 const path = require('path');
-const morganBody = require('morgan-body');
 
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
@@ -31,7 +30,6 @@ const argv = yargs(hideBin(process.argv))
         description: 'the port to run server on',
       });
     })
-
     .alias('h', 'help')
     .version(false).argv;
 
@@ -39,10 +37,7 @@ if (argv.l) {
   userSettings.location = argv.l;
 }
 
-const app = require(path.join(__dirname, 'src', 'index.js'));
-
-if (argv.v == 1) morganBody(app, {logAllReqHeader: false});
-if (argv.v >= 2) morganBody(app, {logAllReqHeader: true});
+const app = require(path.join(__dirname, 'src', 'index.js'))(argv);
 
 const PORT = argv.port || process.env.PORT || 3000;
 

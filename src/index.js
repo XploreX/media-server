@@ -1,5 +1,6 @@
 const express = require('express');
 const session = require('express-session');
+const morganBody = require('morgan-body');
 const mustacheExpress = require('mustache-express');
 const FileStore = require('session-file-store')(session);
 const favicon = require('serve-favicon');
@@ -35,11 +36,16 @@ app.get('/', (req, res) => {
   res.redirect('/content');
 });
 
-app.use('/api', apiRouter);
-app.use('/content', contentRouter);
+const argvHandler = function(argv) {
+  if (argv.v == 1) morganBody(app, {logAllReqHeader: false});
+  if (argv.v >= 2) morganBody(app, {logAllReqHeader: true});
+  app.use('/api', apiRouter);
+  app.use('/content', contentRouter);
 
-const content = userSettings.location;
-app.use('/public', express.static(content));
-app.use('/static', express.static(config.root + '/assets'));
+  const content = userSettings.location;
+  app.use('/public', express.static(content));
+  app.use('/static', express.static(config.root + '/assets'));
+  return app;
+};
 
-module.exports = app;
+module.exports = argvHandler;

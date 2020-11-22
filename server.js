@@ -3,10 +3,10 @@ const path = require('path');
 
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
+const http = require('http');
 require('dotenv').config();
 
-const userSettings = require(__dirname + '/src/user-settings');
-const config = require(__dirname + '/src/config.js');
+const userSettings = require(__dirname + '/src/user/user-settings');
 // const argv = parseArgs(process.argv.slice(2));
 
 const nets = networkInterfaces();
@@ -46,34 +46,14 @@ if (argv.l) {
 userSettings.argv = argv;
 
 console.log(process.argv.slice(2).length);
-if (process.argv.slice(2).length === 0) argv.g = true;
-
-const app = require(path.join(__dirname, 'src', 'index.js'));
-const admin = require(path.join(__dirname, 'admin', 'admin.js'));
+if (process.argv.slice(2).length === 0) {
+  argv.g = true;
+}
 
 const PORT = argv.port || process.env.PORT || 3000;
 
-const server = app.listen(PORT, () => {
-  console.log('server is up');
-  for (const name of Object.keys(nets)) {
-    for (const net of nets[name]) {
-      // skip over non-ipv4 and internal (i.e. 127.0.0.1) addresses
-      if (net.family === 'IPv4' && !net.internal) {
-        console.log('listening at http://' + net.address + ':' + PORT);
-      }
-    }
-  }
-});
-
 if (argv.g) {
-  const adminSettings = require(path.join(
-      __dirname,
-      'admin',
-      'admin-settings.js',
-  ));
-  adminSettings.server = server;
-  adminSettings.userSettings = userSettings;
-  server.close();
+  const admin = require(path.join(__dirname, 'src', 'admin', 'admin.js'));
   const adminServer = admin.listen(parseInt(PORT) + 1, 'localhost', () => {
     console.log('admin server is up');
     console.log(
@@ -82,5 +62,19 @@ if (argv.g) {
         ':' +
         adminServer.address().port,
     );
+  });
+  admin.on('close', () => {});
+} else {
+  const app = require(path.join(__dirname, 'src', 'user', 'index.js'));
+  app.listen(PORT, () => {
+    console.log('server is up');
+    for (const name of Object.keys(nets)) {
+      for (const net of nets[name]) {
+        // skip over non-ipv4 and internal (i.e. 127.0.0.1) addresses
+        if (net.family === 'IPv4' && !net.internal) {
+          console.log('listening at http://' + net.address + ':' + PORT);
+        }
+      }
+    }
   });
 }

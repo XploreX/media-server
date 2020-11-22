@@ -4,6 +4,7 @@ const FileStore = require('session-file-store')(session);
 
 const config = require(__dirname + '/config');
 const adminSettings = require(__dirname + '/admin-settings.js');
+const userapp = require(__dirname + '../user/index.js');
 
 const app = express();
 

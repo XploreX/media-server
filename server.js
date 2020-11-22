@@ -3,7 +3,6 @@ const path = require('path');
 
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
-const http = require('http');
 require('dotenv').config();
 
 const userSettings = require(__dirname + '/src/user/user-settings');
@@ -53,7 +52,7 @@ if (process.argv.slice(2).length === 0) {
 const PORT = argv.port || process.env.PORT || 3000;
 
 if (argv.g) {
-  const admin = require(path.join(__dirname, 'src', 'admin', 'admin.js'));
+  const admin = require(path.join(__dirname, 'src', 'admin', 'index.js'));
   const adminServer = admin.listen(parseInt(PORT) + 1, 'localhost', () => {
     console.log('admin server is up');
     console.log(

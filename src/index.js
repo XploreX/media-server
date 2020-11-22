@@ -36,8 +36,8 @@ app.get('/', (req, res) => {
   res.redirect('/content');
 });
 
-if (userSettings.argv.v == 1) morganBody(app, {logAllReqHeader: false});
-if (userSettings.argv.v >= 2) morganBody(app, {logAllReqHeader: true});
+if (userSettings.verbose == 1) morganBody(app, {logAllReqHeader: false});
+if (userSettings.verbose >= 2) morganBody(app, {logAllReqHeader: true});
 app.use('/api', apiRouter);
 app.use('/content', contentRouter);
 

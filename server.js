@@ -33,12 +33,7 @@ const argv = yargs(hideBin(process.argv))
     .alias('h', 'help')
     .version(false).argv;
 
-if (argv.l) {
-  userSettings.location = argv.l;
-}
-
-userSettings.argv = argv;
-
+Object.assign(userSettings, argv);
 const app = require(path.join(__dirname, 'src', 'index.js'));
 
 const PORT = argv.port || process.env.PORT || 3000;

@@ -6,10 +6,10 @@ const {hideBin} = require('yargs/helpers');
 require('dotenv').config();
 
 const userSettings = require(__dirname + '/src/user-settings');
+const config = require(__dirname + '/src/config.js');
 // const argv = parseArgs(process.argv.slice(2));
 
 const nets = networkInterfaces();
-let gui = true;
 
 const argv = yargs(hideBin(process.argv))
     .scriptName('media-server')
@@ -30,19 +30,26 @@ const argv = yargs(hideBin(process.argv))
         type: 'number',
         description: 'the port to run server on',
       });
+      yargs.option('gui', {
+        alias: 'g',
+        type: 'boolean',
+        description: 'open gui mode for configuring settings',
+      });
     })
     .alias('h', 'help')
     .version(false).argv;
 
 if (argv.l) {
   userSettings.location = argv.l;
-  gui = false;
 }
 
 userSettings.argv = argv;
 
+console.log(process.argv.slice(2).length);
+if (process.argv.slice(2).length === 0) argv.g = true;
+
 const app = require(path.join(__dirname, 'src', 'index.js'));
-const admin = require(path.join(__dirname, 'src', 'admin.js'));
+const admin = require(path.join(__dirname, 'admin', 'admin.js'));
 
 const PORT = argv.port || process.env.PORT || 3000;
 
@@ -58,9 +65,16 @@ const server = app.listen(PORT, () => {
   }
 });
 
-if (gui) {
+if (argv.g) {
+  const adminSettings = require(path.join(
+      __dirname,
+      'admin',
+      'admin-settings.js',
+  ));
+  adminSettings.server = server;
+  adminSettings.userSettings = userSettings;
   server.close();
-  const adminServer = admin.listen(PORT + 1, 'localhost', () => {
+  const adminServer = admin.listen(parseInt(PORT) + 1, 'localhost', () => {
     console.log('admin server is up');
     console.log(
         'listening at http://' +

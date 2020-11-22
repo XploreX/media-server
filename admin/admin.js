@@ -1,8 +1,12 @@
 const express = require('express');
 const session = require('express-session');
-const config = require(__dirname + '/config');
 const FileStore = require('session-file-store')(session);
+
+const config = require(__dirname + '/config');
+const adminSettings = require(__dirname + '/admin-settings.js');
+
 const app = express();
+
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(
@@ -17,8 +21,9 @@ app.use(
     }),
 );
 
-app.get('/*', (req, res) => {
-  res.send('Hello');
+app.get('/start', (req, res) => {
+  adminSettings.server.listen();
+  res.send('Done');
 });
 
 module.exports = app;

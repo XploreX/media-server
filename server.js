@@ -5,7 +5,7 @@ const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
 require('dotenv').config();
 
-const userSettings = require(__dirname + '/src/user-settings');
+const userSettings = require(__dirname + '/src/user/user-settings');
 // const argv = parseArgs(process.argv.slice(2));
 
 const nets = networkInterfaces();
@@ -29,23 +29,47 @@ const argv = yargs(hideBin(process.argv))
         type: 'number',
         description: 'the port to run server on',
       });
+      yargs.option('gui', {
+        alias: 'g',
+        type: 'boolean',
+        description: 'open gui mode for configuring settings',
+      });
     })
     .alias('h', 'help')
     .version(false).argv;
 
 Object.assign(userSettings, argv);
-const app = require(path.join(__dirname, 'src', 'index.js'));
+
+console.log(process.argv.slice(2).length);
+if (process.argv.slice(2).length === 0) {
+  argv.g = true;
+}
 
 const PORT = argv.port || process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log('server is up');
-  for (const name of Object.keys(nets)) {
-    for (const net of nets[name]) {
-      // skip over non-ipv4 and internal (i.e. 127.0.0.1) addresses
-      if (net.family === 'IPv4' && !net.internal) {
-        console.log('listening at http://' + net.address + ':' + PORT);
+if (argv.g) {
+  const admin = require(path.join(__dirname, 'src', 'admin', 'index.js'));
+  const adminServer = admin.listen(parseInt(PORT) + 1, 'localhost', () => {
+    console.log('admin server is up');
+    console.log(
+        'listening at http://' +
+        adminServer.address().address +
+        ':' +
+        adminServer.address().port,
+    );
+  });
+  admin.on('close', () => {});
+} else {
+  const app = require(path.join(__dirname, 'src', 'user', 'index.js'));
+  app.listen(PORT, () => {
+    console.log('server is up');
+    for (const name of Object.keys(nets)) {
+      for (const net of nets[name]) {
+        // skip over non-ipv4 and internal (i.e. 127.0.0.1) addresses
+        if (net.family === 'IPv4' && !net.internal) {
+          console.log('listening at http://' + net.address + ':' + PORT);
+        }
       }
     }
-  }
-});
+  });
+}

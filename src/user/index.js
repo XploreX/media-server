@@ -9,7 +9,8 @@ const config = global.__config;
 const apiRouter = require(config.root + '/src/user/routes/api');
 const contentRouter = require(config.root + '/src/user/routes/content');
 const settings = require(config.root + '/src/settings');
-const userSessionConfig = require(config.root + '/src/user/user-session-config');
+const userSessionConfig = require(config.root +
+  '/src/user/user-session-config');
 
 const app = express();
 

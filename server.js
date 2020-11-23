@@ -5,7 +5,10 @@ const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
 require('dotenv').config();
 
-const userSettings = require(__dirname + '/src/user/user-settings');
+global.__config = require(__dirname+'/config');
+const config = global.__config;
+
+const userSettings = require(config.root + '/src/settings');
 // const argv = parseArgs(process.argv.slice(2));
 
 const nets = networkInterfaces();

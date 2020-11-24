@@ -4,14 +4,14 @@ const path = require('path');
 const express = require('express');
 const serveIndex = require('serve-index');
 
-const config = require(__dirname + '/../config');
-const services = require(config.root + '/services');
-const userSettings = require(config.root + '/user-settings');
+const config = global.__config;
+const services = require(config.root + '/src/user/services');
+const settings = require(config.root + '/src/settings');
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
-const content = userSettings.location;
+const content = settings.location;
 const supportedVideoFormatsReg = services.video.supportedVideoFormatsReg;
 
 router.get(

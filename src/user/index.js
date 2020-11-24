@@ -5,10 +5,12 @@ const mustacheExpress = require('mustache-express');
 const FileStore = require('session-file-store')(session);
 const favicon = require('serve-favicon');
 
-const config = require(__dirname + '/config');
-const apiRouter = require(config.root + '/routes/api');
-const contentRouter = require(config.root + '/routes/content');
-const userSettings = require(config.root + '/user-settings');
+const config = global.__config;
+const apiRouter = require(config.root + '/src/user/routes/api');
+const contentRouter = require(config.root + '/src/user/routes/content');
+const settings = require(config.root + '/src/settings');
+const userSessionConfig = require(config.root +
+  '/src/user/user-session-config');
 
 const app = express();
 
@@ -20,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(
     session({
-      secret: [config.sessionSecret],
+      secret: [userSessionConfig.sessionSecret],
       resave: false,
       saveUninitialized: true,
       cookie: {
@@ -30,19 +32,19 @@ app.use(
     }),
 );
 
-app.use(favicon(config.root + '/public/favicon.ico'));
+app.use(favicon(config.root + '/src/user/public/favicon.ico'));
 
 app.get('/', (req, res) => {
   res.redirect('/content');
 });
 
-if (userSettings.verbose == 1) morganBody(app, {logAllReqHeader: false});
-if (userSettings.verbose >= 2) morganBody(app, {logAllReqHeader: true});
+if (settings.verbose == 1) morganBody(app, {logAllReqHeader: false});
+if (settings.verbose >= 2) morganBody(app, {logAllReqHeader: true});
 app.use('/api', apiRouter);
 app.use('/content', contentRouter);
 
-const content = userSettings.location;
+const content = settings.location;
 app.use('/public', express.static(content));
-app.use('/static', express.static(config.root + '/assets'));
+app.use('/static', express.static(config.root + 'src/user/assets'));
 
 module.exports = app;

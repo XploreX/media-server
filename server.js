@@ -1,14 +1,15 @@
-const {networkInterfaces} = require('os');
 const path = require('path');
 
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
 require('dotenv').config();
 
-const userSettings = require(__dirname + '/src/user-settings');
-// const argv = parseArgs(process.argv.slice(2));
+global.__config = require(__dirname + '/config');
+const config = global.__config;
 
-const nets = networkInterfaces();
+const settings = require(config.root + '/src/settings');
+const startServer = require(config.root + '/src/utility/startServer.js');
+// const argv = parseArgs(process.argv.slice(2));
 
 const argv = yargs(hideBin(process.argv))
     .scriptName('media-server')
@@ -29,23 +30,37 @@ const argv = yargs(hideBin(process.argv))
         type: 'number',
         description: 'the port to run server on',
       });
+      yargs.option('gui', {
+        alias: 'g',
+        type: 'boolean',
+        description: 'open gui mode for configuring settings',
+      });
     })
     .alias('h', 'help')
     .version(false).argv;
 
-Object.assign(userSettings, argv);
-const app = require(path.join(__dirname, 'src', 'index.js'));
+Object.assign(settings, argv);
+
+console.log(process.argv.slice(2).length && settings.location == undefined);
+if (process.argv.slice(2).length === 0 && settings.location == undefined) {
+  argv.g = true;
+}
 
 const PORT = argv.port || process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log('server is up');
-  for (const name of Object.keys(nets)) {
-    for (const net of nets[name]) {
-      // skip over non-ipv4 and internal (i.e. 127.0.0.1) addresses
-      if (net.family === 'IPv4' && !net.internal) {
-        console.log('listening at http://' + net.address + ':' + PORT);
-      }
-    }
-  }
-});
+if (argv.g) {
+  const admin = require(config.root + '/src/admin/index.js');
+  const adminServer = admin.listen(parseInt(PORT) + 1, 'localhost', () => {
+    console.log('admin server is up');
+    console.log(
+        'listening at http://' +
+        adminServer.address().address +
+        ':' +
+        adminServer.address().port,
+    );
+  });
+  admin.on('close', () => {});
+} else {
+  const app = require(config.root + '/src/user/index.js');
+  startServer(app, PORT);
+}

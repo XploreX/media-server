@@ -1,8 +1,10 @@
+const config = global.__config;
+
 const express = require('express');
 const session = require('express-session');
+const startServer = require(config.root + '/src/utility/startServer');
 const FileStore = require('session-file-store')(session);
 
-const config = global.__config;
 const adminSessionConfig = require(config.root +
   '/src/admin/admin-session-config');
 
@@ -23,7 +25,9 @@ app.use(
 );
 
 app.get('/start', (req, res) => {
-  adminSettings.server.listen();
+  delete require.cache[require.resolve(config.root + '/src/user/index.js')];
+  const app = require(config.root + '/src/user/index.js');
+  startServer(app, adminSessionConfig.port);
   res.send('Done');
 });
 

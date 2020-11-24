@@ -1,17 +1,15 @@
-const {networkInterfaces} = require('os');
 const path = require('path');
 
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
 require('dotenv').config();
 
-global.__config = require(__dirname+'/config');
+global.__config = require(__dirname + '/config');
 const config = global.__config;
 
-const userSettings = require(config.root + '/src/settings');
+const settings = require(config.root + '/src/settings');
+const startServer = require(config.root + '/src/utility/startServer.js');
 // const argv = parseArgs(process.argv.slice(2));
-
-const nets = networkInterfaces();
 
 const argv = yargs(hideBin(process.argv))
     .scriptName('media-server')
@@ -41,17 +39,17 @@ const argv = yargs(hideBin(process.argv))
     .alias('h', 'help')
     .version(false).argv;
 
-Object.assign(userSettings, argv);
+Object.assign(settings, argv);
 
-console.log(process.argv.slice(2).length);
-if (process.argv.slice(2).length === 0) {
+console.log(process.argv.slice(2).length && settings.location == undefined);
+if (process.argv.slice(2).length === 0 && settings.location == undefined) {
   argv.g = true;
 }
 
 const PORT = argv.port || process.env.PORT || 3000;
 
 if (argv.g) {
-  const admin = require(path.join(__dirname, 'src', 'admin', 'index.js'));
+  const admin = require(config.root + '/src/admin/index.js');
   const adminServer = admin.listen(parseInt(PORT) + 1, 'localhost', () => {
     console.log('admin server is up');
     console.log(
@@ -63,16 +61,6 @@ if (argv.g) {
   });
   admin.on('close', () => {});
 } else {
-  const app = require(path.join(__dirname, 'src', 'user', 'index.js'));
-  app.listen(PORT, () => {
-    console.log('server is up');
-    for (const name of Object.keys(nets)) {
-      for (const net of nets[name]) {
-        // skip over non-ipv4 and internal (i.e. 127.0.0.1) addresses
-        if (net.family === 'IPv4' && !net.internal) {
-          console.log('listening at http://' + net.address + ':' + PORT);
-        }
-      }
-    }
-  });
+  const app = require(config.root + '/src/user/index.js');
+  startServer(app, PORT);
 }

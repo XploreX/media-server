@@ -107,10 +107,10 @@
                     video.play();
                 else video.pause();
             }
-            if (event.key === 'ArrowLeft') {
+            if (event.key === 'ArrowLeft' || event.key == 'MediaRewind') {
                 video.currentTime = (video.currentTime > 10 ? video.currentTime - 10 : 0);  //reduce video's current time by 10s or 
             }                                                                               //reduce it to 0 if current time is less than 10s
-            if (event.key == 'ArrowRight') {
+            if (event.key == 'ArrowRight' || event.key == 'MediaFastForward') {
                 video.currentTime = (video.duration - video.currentTime > 10 ? video.currentTime + 10 : video.duration) //increase video current time by 10s 
             }                                                          //or increase it to video's duration if currentTime + 10s will exceed video's duration
         });

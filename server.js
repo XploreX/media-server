@@ -47,6 +47,7 @@ if (process.argv.slice(2).length === 0 && settings.location == undefined) {
 }
 
 const PORT = argv.port || process.env.PORT || 3000;
+settings.port = PORT;
 
 if (argv.g) {
   const admin = require(config.root + '/src/admin/index.js');

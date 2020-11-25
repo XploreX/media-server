@@ -40,12 +40,11 @@ app.get('/', (req, res) => {
   res.redirect('/content');
 });
 
-const logFile = './logs/express.log';
 if (settings.verbose == 1) {
-  enableMorgan(app, logFile, {logAllReqHeader: false});
+  enableMorgan(app, config.logFile, {logAllReqHeader: false});
 }
 if (settings.verbose >= 2) {
-  enableMorgan(app, logFile, {logAllReqHeader: true});
+  enableMorgan(app, config.logFile, {logAllReqHeader: true});
 }
 app.use('/api', apiRouter);
 app.use('/content', contentRouter);

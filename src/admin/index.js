@@ -8,6 +8,7 @@ const FileStore = require('session-file-store')(session);
 const adminSessionConfig = require(config.root +
   '/src/admin/admin-session-config');
 
+const settings = require(config.root + '/src/settings');
 const app = express();
 
 app.use(express.json());
@@ -27,9 +28,9 @@ app.use(
 app.get('/start', (req, res) => {
   delete require.cache[require.resolve(config.root + '/src/user/index.js')];
   const clientApp = require(config.root + '/src/user/index.js');
-  startServer(clientApp, adminSessionConfig.port);
+  startServer(clientApp, settings.port);
   res.send('Done');
 });
-app.use('/logs', express.static('./logs/express.log'));
+app.use('/logs', express.static(config.logFile));
 
 module.exports = app;

@@ -1,6 +1,11 @@
-module.exports = function(app, port) {
-  const {networkInterfaces} = require('os');
-  const nets = networkInterfaces();
+const {networkInterfaces} = require('os');
+const nets = networkInterfaces();
+
+/**
+ * @param {express-app} app the express app to start on all interfaces
+ * @param {string} port the port to start the app on
+ */
+function startServer(app, port) {
   app.listen(port, () => {
     console.log('server is up');
     for (const name of Object.keys(nets)) {
@@ -12,4 +17,5 @@ module.exports = function(app, port) {
       }
     }
   });
-};
+}
+module.exports = startServer;

@@ -1,11 +1,13 @@
+const config = global.__config;
+
 const express = require('express');
 const session = require('express-session');
-const morganBody = require('morgan-body');
-const mustacheExpress = require('mustache-express');
 const FileStore = require('session-file-store')(session);
+const mustacheExpress = require('mustache-express');
 const favicon = require('serve-favicon');
 
-const config = global.__config;
+const {enableMorgan} = require(config.root + '/src/user/services/logging.js');
+
 const apiRouter = require(config.root + '/src/user/routes/api');
 const contentRouter = require(config.root + '/src/user/routes/content');
 const settings = require(config.root + '/src/settings');
@@ -38,13 +40,18 @@ app.get('/', (req, res) => {
   res.redirect('/content');
 });
 
-if (settings.verbose == 1) morganBody(app, {logAllReqHeader: false});
-if (settings.verbose >= 2) morganBody(app, {logAllReqHeader: true});
+const logFile = './logs/express.log';
+if (settings.verbose == 1) {
+  enableMorgan(app, logFile, {logAllReqHeader: false});
+}
+if (settings.verbose >= 2) {
+  enableMorgan(app, logFile, {logAllReqHeader: true});
+}
 app.use('/api', apiRouter);
 app.use('/content', contentRouter);
 
 const content = settings.location;
 app.use('/public', express.static(content));
-app.use('/static', express.static(config.root + 'src/user/assets'));
+app.use('/static', express.static(config.root + '/src/user/assets'));
 
 module.exports = app;

@@ -26,9 +26,10 @@ app.use(
 
 app.get('/start', (req, res) => {
   delete require.cache[require.resolve(config.root + '/src/user/index.js')];
-  const app = require(config.root + '/src/user/index.js');
-  startServer(app, adminSessionConfig.port);
+  const clientApp = require(config.root + '/src/user/index.js');
+  startServer(clientApp, adminSessionConfig.port);
   res.send('Done');
 });
+app.use('/logs', express.static('./logs/express.log'));
 
 module.exports = app;

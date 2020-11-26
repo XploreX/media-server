@@ -1,4 +1,5 @@
 const path = require('path');
+const opn = require('opn');
 
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
@@ -53,12 +54,13 @@ if (argv.g) {
   const admin = require(config.root + '/src/admin/index.js');
   const adminServer = admin.listen(parseInt(PORT) + 1, 'localhost', () => {
     console.log('admin server is up');
-    console.log(
-        'listening at http://' +
-        adminServer.address().address +
-        ':' +
-        adminServer.address().port,
-    );
+    const url =
+      'http://' +
+      adminServer.address().address +
+      ':' +
+      adminServer.address().port;
+    console.log('listening at ' + url);
+    opn(url);
   });
   admin.on('close', () => {});
 } else {

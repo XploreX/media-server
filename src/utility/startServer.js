@@ -4,9 +4,10 @@ const nets = networkInterfaces();
 /**
  * @param {express-app} app the express app to start on all interfaces
  * @param {string} port the port to start the app on
+ * @return {Http.server} the server instance
  */
 function startServer(app, port) {
-  app.listen(port, () => {
+  const server = app.listen(port, () => {
     console.log('server is up');
     for (const name of Object.keys(nets)) {
       for (const net of nets[name]) {
@@ -17,5 +18,6 @@ function startServer(app, port) {
       }
     }
   });
+  return server;
 }
 module.exports = startServer;

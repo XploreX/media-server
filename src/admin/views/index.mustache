@@ -104,7 +104,10 @@
                     <div class="form-group">
                       <label for="location">Location:</label>
                       <input type="text" class="form-control" id="location" placeholder="Enter Location"
-                        value="{{location}}"" required>
+                    value="{{location}}" required>
+                      <small id="emailHelp" class="form-text text-muted">Due to browser security sandbox restrictions we can't get the 
+                      absolute path to the folder, Please copy paste the folder path above.
+                      </small>
                       <br>
                       <label for=" port">Port:</label>
                       <input type="number" class="form-control" id="port" placeholder="Enter Port" value="{{port}}"
@@ -121,8 +124,6 @@
                         <label class="custom-control-label" for="logHeaders">
                           Log Headers</label>
                       </div>
-                      <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your
-                          email with anyone else.</small> -->
                     </div>
                   </form>
                 </div>
@@ -170,7 +171,7 @@
                 <div class="card-body bg-dark text-white">
                   {{! <iframe class="iframe-responsive" src="/logs" id="iframelogs" width="100%">
                   </iframe> }}
-                  <p id="clientlogs" width="100%" style="white-space: pre-wrap" height="25vh" class="overflow-auto"> 
+                  <p id="clientlogs" width="100%" style="white-space: pre-wrap;overflow-y: scroll; height:200px;" class="overflow-auto"> 
                   Loading...
                   </p>
                 </div>

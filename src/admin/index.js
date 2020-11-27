@@ -32,6 +32,7 @@ app.use(
 );
 let server;
 let serverRunning = false;
+
 app.get('/api/start', (req, res) => {
   delete require.cache[require.resolve(config.root + '/src/user/index.js')];
   const clientApp = require(config.root + '/src/user/index.js');
@@ -39,6 +40,7 @@ app.get('/api/start', (req, res) => {
   serverRunning = true;
   res.send('OK');
 });
+
 app.get('/api/stop', (req, res) => {
   server.close();
   stream = fs.createWriteStream(config.logFile, {flags: 'a'});
@@ -49,11 +51,33 @@ app.get('/api/stop', (req, res) => {
   serverRunning = false;
   res.send('OK');
 });
-app.post('/api/update', (req, res) => {});
+
+app.post('/api/update', (req, res) => {
+  console.log(req.body);
+  settings.location = req.body.location;
+  req.session.location = settings.location;
+  settings.port = req.body.port;
+  req.session.port = settings.port;
+  settings.port = req.body.port;
+  if (req.body.logging) {
+    req.session.logging = true;
+    settings.verbose = 1;
+  } else {
+    req.session.logging = false;
+  }
+  if (req.body.logHeaders) {
+    req.session.logHeaders = true;
+    settings.verbose = 2;
+  } else req.session.logHeaders = false;
+
+  req.res.send('OK');
+});
+
 app.get('/api/status', (req, res) => {
   if (serverRunning == true) res.send('OK');
   else res.send('FAIL');
 });
+
 app.get('/api/clearlogs', (req, res) => {
   console.log('deleting logs');
   fs.unlinkSync(config.logFile);
@@ -64,12 +88,16 @@ app.get('/api/clearlogs', (req, res) => {
   });
   res.send('OK');
 });
+
 app.get('/', (req, res) => {
   res.render('index.mustache', {
-    port: settings.port,
-    location: settings.location,
+    port: settings.port || req.session.port,
+    location: settings.location || req.session.location,
+    logging: settings.logging || req.session.logging,
+    logHeaders: settings.logHeaders || req.session.logHeaders,
   });
 });
+
 app.use('/logs', express.static(config.logFile));
 app.use('/static', express.static(config.root + '/src/admin/assets'));
 

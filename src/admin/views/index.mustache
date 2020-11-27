@@ -96,36 +96,49 @@
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                   <h6 class="m-0 font-weight-bold text-primary">Settings</h6>
-                  <button class="btn btn-primary" href="#">Save</button>
+                  <button class="btn btn-primary" id="submitbtn" onclick="submitForm()">Save</button>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                  <form>
+                  <form id="settingsform" action="/api/update" method="post">
                     <div class="form-group">
                       <label for="location">Location:</label>
-                      <input type="text" class="form-control" id="location" placeholder="Enter Location"
+                      <input name="location" type="text" class="form-control" id="location" placeholder="Enter Location"
                         value="{{location}}" required>
                       <small class="form-text text-muted">Due to browser security sandbox restrictions we
                         can't get the
                         absolute path to the folder, Please copy paste the folder path above.
                       </small>
-                      <br>
-                      <label for=" port">Port:</label>
-                      <input type="number" class="form-control" id="port" placeholder="Enter Port" value="{{port}}"
-                        required>
-                      <br>
-                      <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="logging">
-                        <label class="custom-control-label" for="logging">
-                          Enable Logging</label>
-                      </div>
-                      <br>
-                      <div class="custom-control custom-switch">
-                        <input disabled type="checkbox" class="custom-control-input" id="logHeaders">
-                        <label class="custom-control-label" for="logHeaders">
-                          Log Headers</label>
-                      </div>
                     </div>
+                    <br>
+                    <div class="form-group">
+                      <label for="port">Port:</label>
+                      <input name="port" type="number" class="form-control" id="port" placeholder="Enter Port"
+                        value="{{port}}" required>
+                    </div>
+                    <br>
+                    <div class="form-group custom-control custom-switch">
+                      {{#logging}}
+                      <input name="logging" type="checkbox" class="custom-control-input" id="logging" checked>
+                      {{/logging}}
+                      {{^logging}}
+                      <input name="logging" type="checkbox" class="custom-control-input" id="logging">
+                      {{/logging}}
+                      <label class="custom-control-label" for="logging">
+                        Enable Logging</label>
+                    </div>
+                    <br>
+                    <div class="form-group custom-control custom-switch">
+                      {{#logHeaders}}
+                      <input name="logHeaders" type="checkbox" class="custom-control-input" id="logHeaders" checked>
+                      {{/logHeaders}}
+                      {{^logHeaders}}
+                      <input name="logHeaders" type="checkbox" class="custom-control-input" id="logHeaders">
+                      {{/logHeaders}}
+                      <label class="custom-control-label" for="logHeaders">
+                        Log Headers</label>
+                    </div>
+                    {{! <button type="submit" class="btn btn-primary">Submit</button> }}
                   </form>
                 </div>
               </div>
@@ -210,8 +223,46 @@
 
   {{! <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script> }}
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
   <script>
+    function submitForm() {
+      let form = $("#settingsform");
+      form.validate({
+        rules: {
+          location: {
+            required: true
+          },
+          port: {
+            required: true
+          }
+        },
+        messages: {               //messages to appear on error
+          location: {
+            required: "location is required",
+          },
+          port: {
+            required: "port is required",
+          },
+        },
+        submitHandler: (form) => {
+          $.ajax({
+            type: "POST",
+            url: '/api/update',
+            data: $(form).serialize(), // serializes the form's elements.
+            success: (data) => {
+              if(data=="OK"){
+                $("#submitbtn")[0].innerHTML="Saved!";
+                setTimeout(()=>{
+                  $("#submitbtn")[0].innerHTML="Save"
+                },2000);
+              }
+            }
+          })
+        }
+      });
+      form.submit()
 
+    }
     $(document).ready(() => {
       const startText = 'Start Server';
       const stopText = 'Stop Server'

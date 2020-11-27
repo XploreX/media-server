@@ -16,7 +16,13 @@ function enableMorgan(app, logFile, params) {
     flags: 'a',
   });
   morganBody(app, {logAllReqHeader: true});
-  morganBody(app, Object.assign({noColors: true, stream: log}, params));
+  morganBody(
+      app,
+      Object.assign(
+          {noColors: true, stream: log, logResponseBody: false},
+          params,
+      ),
+  );
 }
 
 module.exports = {

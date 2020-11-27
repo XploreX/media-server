@@ -35,16 +35,21 @@ let serverRunning = false;
 app.get('/api/start', (req, res) => {
   delete require.cache[require.resolve(config.root + '/src/user/index.js')];
   const clientApp = require(config.root + '/src/user/index.js');
-  server = startServer(clientApp, settings.port);
+  server = startServer(clientApp, settings.port, config.logFile);
   serverRunning = true;
   res.send('OK');
 });
 app.get('/api/stop', (req, res) => {
   server.close();
-  console.log('Server Stopped');
+  stream = fs.createWriteStream(config.logFile, {flags: 'a'});
+  const message = 'Server Stopped';
+  console.log(message);
+  stream.write(message + '\n');
+  stream.end();
   serverRunning = false;
   res.send('OK');
 });
+app.post('/api/update', (req, res) => {});
 app.get('/api/status', (req, res) => {
   if (serverRunning == true) res.send('OK');
   else res.send('FAIL');

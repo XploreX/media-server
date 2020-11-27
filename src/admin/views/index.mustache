@@ -103,10 +103,12 @@
                   <form>
                     <div class="form-group">
                       <label for="location">Location:</label>
-                      <input type="text" class="form-control" id="location" placeholder="Enter Location" value="{{location}}"" required>
+                      <input type="text" class="form-control" id="location" placeholder="Enter Location"
+                        value="{{location}}"" required>
                       <br>
-                      <label for="port">Port:</label>
-                      <input type="number" class="form-control" id="port" placeholder="Enter Port" value="{{port}}" required>
+                      <label for=" port">Port:</label>
+                      <input type="number" class="form-control" id="port" placeholder="Enter Port" value="{{port}}"
+                        required>
                       <br>
                       <div class="custom-control custom-switch">
                         <input type="checkbox" class="custom-control-input" id="logging">
@@ -165,9 +167,12 @@
                   <button id="clearlogs" class="btn btn-primary" href="#">Clear Logs</button>
                 </div>
                 <!-- Card Body -->
-                <div class="card-body">
-                  <iframe class="iframe-responsive" src="/logs" id="iframelogs" width="100%">
-                  </iframe>
+                <div class="card-body bg-dark text-white">
+                  {{! <iframe class="iframe-responsive" src="/logs" id="iframelogs" width="100%">
+                  </iframe> }}
+                  <p id="clientlogs" width="100%" style="white-space: pre-wrap" height="25vh" class="overflow-auto"> 
+                  Loading...
+                  </p>
                 </div>
               </div>
             </div>
@@ -205,22 +210,23 @@
   <script>
 
     $(document).ready(() => {
-      const startText='Start Server';
-      const stopText='Stop Server'
+      const startText = 'Start Server';
+      const stopText = 'Stop Server'
       let btn = $("#serverstate");
       $.ajax({
-        url:'/api/status',
-        success: (res)=>{
-          if(res=='OK')
-            btn[0].innerHTML=stopText;
-          else if(res=='FAIL')
-          btn[0].innerHTML=startText;
+        url: '/api/status',
+        success: (res) => {
+          if (res == 'OK')
+            btn[0].innerHTML = stopText;
+          else if (res == 'FAIL')
+            btn[0].innerHTML = startText;
 
         }
       })
       btn.click(() => {
         console.log(btn[0].innerHTML)
         if (btn[0].innerHTML.trim() == startText) {
+          btn[0].innerHTML="Starting...";
           $.ajax({
             url: '/api/start', success: (res) => {
               if (res === "OK") {
@@ -230,7 +236,8 @@
           });
         }
         else {
-        $.ajax({
+          btn[0].innerHTML="Stopping...";
+          $.ajax({
             url: '/api/stop', success: (res) => {
               if (res === "OK") {
                 btn[0].innerHTML = startText
@@ -239,19 +246,26 @@
           });
         }
       })
-      $( "#clearlogs" ).click(()=>{
+      $("#clearlogs").click(() => {
         $.ajax({
-            url: '/api/clearlogs', success: (res) => {
-              if (res === "OK") {
-                {{! show toast cleared }}
-              }
+          url: '/api/clearlogs', success: (res) => {
+            if (res === "OK") {
             }
-          });
+          }
+        });
       });
-      function reloadIframe(){
-          $( "#iframelogs" )[0].contentWindow.location.reload();
+      function reloadIframe() {
+        $.ajax({
+          url: '/logs',dataType: "html", success: (res) => {
+            {{! alert(res); }}
+            let objDiv = $("#clientlogs")[0];
+            var result=$('<div />').append(res).html();
+            objDiv.innerHTML=res;
+            objDiv.scrollTop = objDiv.scrollHeight;
+          }
+        });
       }
-      setInterval(reloadIframe,5000);
+      setInterval(reloadIframe, 1000);
     })
   </script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"

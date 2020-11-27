@@ -104,9 +104,10 @@
                     <div class="form-group">
                       <label for="location">Location:</label>
                       <input type="text" class="form-control" id="location" placeholder="Enter Location"
-                    value="{{location}}" required>
-                      <small id="emailHelp" class="form-text text-muted">Due to browser security sandbox restrictions we can't get the 
-                      absolute path to the folder, Please copy paste the folder path above.
+                        value="{{location}}" required>
+                      <small class="form-text text-muted">Due to browser security sandbox restrictions we
+                        can't get the
+                        absolute path to the folder, Please copy paste the folder path above.
                       </small>
                       <br>
                       <label for=" port">Port:</label>
@@ -171,8 +172,9 @@
                 <div class="card-body bg-dark text-white">
                   {{! <iframe class="iframe-responsive" src="/logs" id="iframelogs" width="100%">
                   </iframe> }}
-                  <p id="clientlogs" width="100%" style="white-space: pre-wrap;overflow-y: scroll; height:200px;" class="overflow-auto"> 
-                  Loading...
+                  <p id="clientlogs" width="100%" style="white-space: pre-wrap;overflow-y: scroll; height:200px;"
+                    class="overflow-auto">
+                    Loading...
                   </p>
                 </div>
               </div>
@@ -227,7 +229,7 @@
       btn.click(() => {
         console.log(btn[0].innerHTML)
         if (btn[0].innerHTML.trim() == startText) {
-          btn[0].innerHTML="Starting...";
+          btn[0].innerHTML = "Starting...";
           $.ajax({
             url: '/api/start', success: (res) => {
               if (res === "OK") {
@@ -237,7 +239,7 @@
           });
         }
         else {
-          btn[0].innerHTML="Stopping...";
+          btn[0].innerHTML = "Stopping...";
           $.ajax({
             url: '/api/stop', success: (res) => {
               if (res === "OK") {
@@ -257,16 +259,21 @@
       });
       function reloadIframe() {
         $.ajax({
-          url: '/logs',dataType: "html", success: (res) => {
-            {{! alert(res); }}
+          url: '/logs', dataType: "html", success: (res) => {
             let objDiv = $("#clientlogs")[0];
-            var result=$('<div />').append(res).html();
-            objDiv.innerHTML=res;
+            var result = $('<div />').append(res).html();
+            objDiv.innerHTML = res;
             objDiv.scrollTop = objDiv.scrollHeight;
           }
         });
       }
-      setInterval(reloadIframe, 1000);
+      var reload = setInterval(reloadIframe, 1000);
+      $("#clientlogs").hover(function () {
+        clearInterval(reload);
+      }, function () {
+        clearInterval(reload);
+        reload = setInterval(reloadIframe, 1000);
+      });
     })
   </script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"

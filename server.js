@@ -1,5 +1,4 @@
-const path = require('path');
-const opn = require('opn');
+const open = require('open');
 
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
@@ -60,7 +59,7 @@ if (argv.g) {
       ':' +
       adminServer.address().port;
     console.log('listening at ' + url);
-    opn(url);
+    open(url);
   });
   admin.on('close', () => {});
 } else {

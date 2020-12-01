@@ -36,7 +36,7 @@ parser.add_argument(
 parser.add_argument(
     '-f', help='try faster conversion(may not work)', action="store_true")
 parser.add_argument('-o', help='convert only subtitles for the videos',action="store_true")
-parser.add_argument('-n', help='no subs', action="store_true")
+parser.add_argument('-n', help='no subs(default)', action="store_true")
 parser.add_argument('-v', help='verbose', action="store_true")
 args = parser.parse_args()
 
@@ -76,11 +76,17 @@ def match_progress_string(l2):
         return False
 
 # A helper function to print coloured strings
-def print_color(color,string,bold=False):
+def print_color(color,string,bold=False,lineend=True):
     if(bold):
-        print(f"{bcolors.BOLD}{color}{string}{bcolors.ENDC}")
+        if not lineend:
+            print(f"{bcolors.BOLD}{color}{string}{bcolors.ENDC}",end='')
+        else:
+            print(f"{bcolors.BOLD}{color}{string}{bcolors.ENDC}")
     else:
-        print(f"{color}{string}{bcolors.ENDC}")
+        if not lineend:
+            print(f"{color}{string}{bcolors.ENDC}",end='')
+        else:
+            print(f"{color}{string}{bcolors.ENDC}")
 
 # error handler while extracting subs, returns True if error found
 def subs_error_ffmpeg(output):
@@ -130,8 +136,11 @@ def get_output(process,error_handler=None):
 
 # if no method for extracting subs given, defaults to no subs to be extracted
 if(not args.s and not args.x):
+    print_color(bcolors.OKGREEN,f"+ Defaulting to No Subtitles as no suitable arguments passed",True)
     args.n=True
 
+preferred_codecs=dict()
+preferred_choices=dict()
 # Iterating of files
 for filename in dirs:
 
@@ -145,7 +154,144 @@ for filename in dirs:
 
     print_color(bcolors.HEADER,f"+ Started Process for {filename}",True)
 
-    # If we have to extract args
+        # If subtitle only flag given, copy the video to the folder 
+    
+    # check the codecs in original file
+    sh = f'ffprobe "{os.path.join(basedir,filename)}" 2>&1 >/dev/null | grep -i "Stream"'
+    process = sp.Popen(sh, shell=True, stderr=sp.PIPE, stdout=sp.PIPE)
+
+    # get all the outputs
+    outputs = process.stdout.readlines()
+    regex = r'Stream #([0-9:\(\)a-zA-Z]*):\s*([a-zA-Z]*)\s*:\s*([a-zA-Z0-9\(\) ]*)'
+    codecs=dict()
+
+    # extract the codecs using regex
+    logger.debug(outputs)
+    for j in range(len(outputs)):
+        extracts = outputs[j].decode()
+        #try:
+        groups = re.search(regex, extracts).groups()
+        logger.debug(groups)
+        stream = groups[0].strip()
+        streamtype = groups[1].strip()
+        codec = groups[2].replace('(default)','').strip()
+        if('(' in stream):
+            temp=stream.strip('()').split('(')
+            stream=temp[0]
+            codec+=' '+temp[1]
+        if('default' in extracts):
+            codec+=' (default)'
+        codec=f"#{stream}: "+ codec
+        if(codecs.get(streamtype)==None):
+            codecs[streamtype]=[codec]
+        else:
+            codecs[streamtype]+=[codec]
+        #except:
+        #    pass
+    logger.debug(codecs)
+    for key in codecs.keys():
+        choice=100
+        size=len(codecs[key])
+        found=False
+        if args.o:
+            if key in ['Audio','Video']:
+                continue
+        if not args.x and 'Subtitle' in key:
+            continue
+        while choice>size:
+            print_color(bcolors.OKCYAN,f"\n+++ Choose {key} stream: +++",bold=True)
+            for j in range(size):
+                print_color(bcolors.OKGREEN,f"{j+1}: {codecs[key][j]}")
+                if preferred_codecs.get(key)==None:
+                    if 'default' in codecs[key][j]:
+                        choice=j+1
+                if preferred_codecs.get(key)!=None and preferred_codecs[key] in codecs[key][j]:
+                    print_color(bcolors.OKGREEN,f'+ Found {preferred_codecs[key]} from preferred choices')
+                    found=True
+                    choice=j+1
+                    break
+            if not found:
+                if(size>1):
+                    message=f'Please enter your choice(1-{len(codecs[key])})(default={choice})'
+                else:
+                    message=(f'Please enter your choice(1)(default={choice}):')
+                print_color(bcolors.WARNING,message,lineend=False)
+                temp=input()
+                if(temp!=''):
+                    try:
+                        choice=int(temp)
+                        temp=codecs[key][choice-1]
+                    except:
+                        print_color(bcolors.FAIL,'- Error')
+                        choice=100
+
+            if choice<=size:
+                choice-=1
+                if preferred_codecs.get(key)==None:
+                    print_color(bcolors.OKCYAN,'Prefer this for other files also?(Y/n)(default=Y)',lineend=False)
+                    prefer=input()
+                    if(prefer.capitalize()!='N'):
+                        preferred_codecs[key]=codecs[key][choice]
+                    else:
+                        print_color(bcolors.OKGREEN,'Defaulting to yes',lineend=False)
+                codecs[key]=codecs[key][choice]
+                break
+
+   
+       
+    logger.debug(f"initial codecs: {codecs}")
+
+    # if codec is h264, no need to reencode
+    streams=dict()
+    for i in codecs.keys():
+        streams[i]=codecs[i][3:4]
+
+    allowed_codecs={
+            'Video':'h264',
+            'Audio':'aac',
+            'Subtitle': 'mov_text'
+        }
+
+    print('-' * 40)
+    print()
+    for key in allowed_codecs.keys():
+        if allowed_codecs[key] in codecs[key]:
+            print_color(bcolors.OKGREEN,f"+ Supported {key} format")
+            codecs[key] = 'copy'
+        else:
+            if 'Audio' in key:
+                if not args.o:
+                    print_color(bcolors.WARNING,f"! Unsupported {key} format, Converting it")
+                    codecs[key]=allowed_codecs[key]
+                else:
+                    codecs[key]='copy'
+            elif 'Video' in key:
+                if not args.o:
+                    print_color(bcolors.WARNING,f"! Unsupported {key} format, Converting it")
+                    if preferred_choices.get(key)==None:
+                        convert_vid=input(f"current video codec is {codecs['Video']}, convert it to h264?(y/N)(default=N)")
+                        # defaults to N so only checking if Y entered
+                        if(convert_vid.capitalize=='Y'):
+                            codecs[key]='h264'
+                        else:
+                            codecs[key]='copy'
+                        print_color(bcolors.OKCYAN,'Prefer this for other files also?(Y/n)(default=Y)',lineend=False)
+                        prefer=input()
+                        if(prefer.capitalize()!='N'):
+                            preferred_choices[key]=codecs[key]
+                        else:
+                            print_color(bcolors.OKGREEN,'Defaulting to yes',lineend=False)
+                    else:
+                        codecs[key]=preferred_choices[key]
+                        print_color(bcolors.OKGREEN,f'+ Found {preferred_choices[key]} from preferred choices')
+                else:
+                    codecs[key]='copy'
+            else: #Subtitles don't need any warning
+                codecs[key]=allowed_codecs[key]
+
+    logger.debug("Streams are: " + str(streams))
+
+    # If we have to extract subs
     success_subs=True
     if(not args.n):
 
@@ -164,7 +310,7 @@ for filename in dirs:
             print_color(bcolors.OKCYAN,f"+ Extracting subs from {initial_subs_file}")
 
             # create the shell command
-            sh = f'ffmpeg -y -i "{initial_subs_file}" "{final_subs_file}"'
+            sh = f'ffmpeg -y -i "{initial_subs_file}" -map 0:{streams["Subtitle"]} "{final_subs_file}"'
             logger.debug(sh)
 
             # spawn popen process
@@ -180,9 +326,8 @@ for filename in dirs:
             print_color(bcolors.FAIL,f"- Err:{initial_subs_file} not found")
             success_subs=False
 
-    # If subtitle only flag given, copy the video to the folder 
     if(args.o):
-        print_color(bcolors.HEADER,f"* Copying Video to output_folder as subtitle only conversion given")
+        print_color(bcolors.HEADER,f"* Copying Video to output_folder as copy only conversion given")
 
         # Using ffmpeg to show the copy progress, shutil copy doesn't have any helper function for that
         sh = f'ffmpeg -y -vsync 0 -hwaccel auto -i "{os.path.join(basedir,filename)}" -c copy "{os.path.join(output_dir,filename)}"'
@@ -198,71 +343,18 @@ for filename in dirs:
             print_color(bcolors.FAIL,f"- Some Error Occurred While Copying")
         continue
 
-    # check the codecs in original file
-    sh = f'ffprobe "{os.path.join(basedir,filename)}" 2>&1 >/dev/null | grep -i "Stream"'
-    process = sp.Popen(sh, shell=True, stderr=sp.PIPE, stdout=sp.PIPE)
-
-    # get all the outputs
-    outputs = process.stdout.readlines()
-    regexes = ['(Video): ([a-zA-Z0-9]*)', '(Audio): ([a-zA-Z0-9]*)',
-               '(Subtitle): ([a-zA-Z0-9]*)']
-    codecs = {
-        'Video':"",
-        'Audio':"",
-        'Subtitle':"",
-    }
-
-    # extract the codecs using regex
-    for j in range(len(outputs)):
-        extracts = outputs[j]
-        try:
-            stream = re.search(regexes[j], extracts.decode()).groups()[0].strip()
-            codec = re.search(regexes[j], extracts.decode()).groups()[1].strip()
-            codecs[stream]=codec
-        except:
-            pass
-
-    logger.debug(f"initial codecs: {codecs}")
-
-    # if codec is h264, no need to reencode
-    if(codecs['Video'] == 'h264'):
-        print_color(bcolors.OKGREEN,f"+ Supported Video format")
-        codecs['Video'] = 'copy'
-    else:
-        print_color(bcolors.WARNING,f"! Unsupported Video format")
-        #if codec is different, ask the user as this is time consuming process
-        convert_vid=input(f"current video codec is {codecs['Video']}, convert it to h264?(y/N)")
-
-        # defaults to N so only checking if Y entered
-        if(convert_vid.capitalize=='Y'):
-            codecs['Video']='h264'
-        else:
-            codecs['Video']='copy'
-    
-    # audio codec conversions ain't much time consuming so not asking for user input on that
-    if(codecs['Audio'] == 'aac'):
-        print_color(bcolors.OKGREEN,f"+ Supported Audio format")
-        codecs['Audio'] = 'copy'
-    else:
-        print_color(bcolors.WARNING,f"! Unsupported Audio format, Converting it")
-        codecs['Audio'] = 'aac'
-
-    # subtitle codecs
-    if(args.n):
-        codecs['Subtitle']=''
-    else:
-        codecs['Subtitle'] = 'mov_text'
-
     logger.debug(f"final codecs: {codecs}")
     print_color(bcolors.OKCYAN,f"+ converting video {filename}")
 
     # if subs are successful and subtitles are to be embedded
     if(not args.n and success_subs==True and not args.f):
         sh = f'ffmpeg -y -vsync 0 -threads {os.cpu_count()} -hwaccel auto -i "{os.path.join(basedir,filename)}" '
+        #sh+=f'-f webvtt -i "{final_subs_file}" -map 1:0 '
         sh+=f'-f webvtt -i "{final_subs_file}" -map 1:0 '
-        sh+=f'-map 0:0 -map 0:1 -c:v {codecs["Video"]} -c:a {codecs["Audio"]} -c:s {codecs["Subtitle"]} "{final_video_file}"'
+        #sh+=f'-map 0:0 -map 0:1 -c:v {codecs["Video"]} -c:a {codecs["Audio"]} -c:s {codecs["Subtitle"]} "{final_video_file}"'
+        sh+=f'-map 0:{streams["Video"]} -map 0:{streams["Audio"]} -c:v {codecs["Video"]} -c:a {codecs["Audio"]} -c:s {codecs["Subtitle"]} "{final_video_file}"'
     else:
-        sh = f'ffmpeg -y -vsync 0 -threads {os.cpu_count()} -hwaccel auto -i "{os.path.join(basedir,filename)}" -c:v {codecs["Video"]} -c:a {codecs["Audio"]} "{final_video_file}"'
+        sh = f'ffmpeg -y -vsync 0 -threads {os.cpu_count()} -hwaccel auto -i "{os.path.join(basedir,filename)}" -map 0:{streams["Video"]} -map 0:{streams["Audio"]} -c:v {codecs["Video"]} -c:a {codecs["Audio"]} "{final_video_file}"'
 
     logger.debug(sh)
     process=sp.Popen(sh,shell=True,stderr=sp.STDOUT,stdout=sp.PIPE,universal_newlines=True)

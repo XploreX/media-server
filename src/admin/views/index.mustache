@@ -268,7 +268,7 @@
       const stopText = 'Stop Server'
       let btn = $("#serverstate");
       $.ajax({
-        url: '/api/status',
+        url: '/api/user-server/status',
         success: (res) => {
           if (res == 'OK')
             btn[0].innerHTML = stopText;
@@ -282,7 +282,7 @@
         if (btn[0].innerHTML.trim() == startText) {
           btn[0].innerHTML = "Starting...";
           $.ajax({
-            url: '/api/start', success: (res) => {
+            url: '/api/user-server/start', success: (res) => {
               if (res === "OK") {
                 btn[0].innerHTML = stopText
               }
@@ -292,7 +292,7 @@
         else {
           btn[0].innerHTML = "Stopping...";
           $.ajax({
-            url: '/api/stop', success: (res) => {
+            url: '/api/user-server/stop', success: (res) => {
               if (res === "OK") {
                 btn[0].innerHTML = startText
               }

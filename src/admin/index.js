@@ -1,16 +1,16 @@
 const config = global.__config;
 
+const fs = require('fs');
+
 const express = require('express');
 const session = require('express-session');
-const startServer = require(config.root + '/src/utility/startServer');
 const mustacheExpress = require('mustache-express');
 const FileStore = require('session-file-store')(session);
 
 const adminSessionConfig = require(config.root +
   '/src/admin/admin-session-config');
-const fs = require('fs');
-
 const settings = require(config.root + '/src/settings');
+
 const app = express();
 
 app.set('views', __dirname + '/views');
@@ -30,27 +30,8 @@ app.use(
       store: new FileStore(),
     }),
 );
-let server;
-let serverRunning = false;
 
-app.get('/api/start', (req, res) => {
-  delete require.cache[require.resolve(config.root + '/src/user/index.js')];
-  const clientApp = require(config.root + '/src/user/index.js');
-  server = startServer(clientApp, settings.port, config.logFile);
-  serverRunning = true;
-  res.send('OK');
-});
-
-app.get('/api/stop', (req, res) => {
-  server.close();
-  stream = fs.createWriteStream(config.logFile, {flags: 'a'});
-  const message = 'Server Stopped';
-  console.log(message);
-  stream.write(message + '\n');
-  stream.end();
-  serverRunning = false;
-  res.send('OK');
-});
+app.use('/api', require(config.root + '/src/admin/routes/api'));
 
 app.post('/api/update', (req, res) => {
   console.log(req.body);
@@ -70,12 +51,7 @@ app.post('/api/update', (req, res) => {
     settings.verbose = 2;
   } else req.session.logHeaders = false;
 
-  req.res.send('OK');
-});
-
-app.get('/api/status', (req, res) => {
-  if (serverRunning == true) res.send('OK');
-  else res.send('FAIL');
+  res.send('OK');
 });
 
 app.get('/api/clearlogs', (req, res) => {

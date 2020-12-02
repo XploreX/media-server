@@ -58,7 +58,7 @@ if(not os.path.isdir(args.path)):
     basedir = os.path.dirname(args.path)
 else:
     dirs = [os.path.basename(filename) for filename in os.listdir(
-        args.path) if filename.endswith(".mkv") or filename.endswith(".mp4") or filename.endswith(".avi")]
+        args.path) if filename.endswith((".mkv",".mp4",".avi",".wmv",".mov",".ogg",".flv",".mpeg",".mpg"))]
     basedir = args.path
 
 # create output dirs
@@ -139,8 +139,10 @@ if(not args.s and not args.x):
     print_color(bcolors.OKGREEN,f"+ Defaulting to No Subtitles as no suitable arguments passed",True)
     args.n=True
 
+# These will store the preferred user answer for the run
 preferred_codecs=dict()
 preferred_choices=dict()
+
 # Iterating of files
 for filename in dirs:
 
@@ -154,7 +156,6 @@ for filename in dirs:
 
     print_color(bcolors.HEADER,f"+ Started Process for {filename}",True)
 
-        # If subtitle only flag given, copy the video to the folder 
     
     # check the codecs in original file
     sh = f'ffprobe "{os.path.join(basedir,filename)}" 2>&1 >/dev/null | grep -i "Stream"'
@@ -169,9 +170,11 @@ for filename in dirs:
     logger.debug(outputs)
     for j in range(len(outputs)):
         extracts = outputs[j].decode()
-        #try:
         groups = re.search(regex, extracts).groups()
+
         logger.debug(groups)
+
+        # Extract the regexes
         stream = groups[0].strip()
         streamtype = groups[1].strip()
         codec = groups[2].replace('(default)','').strip()
@@ -179,25 +182,34 @@ for filename in dirs:
             temp=stream.strip('()').split('(')
             stream=temp[0]
             codec+=' '+temp[1]
+
+        # Add default stream to codecs for user
         if('default' in extracts):
             codec+=' (default)'
+
+        # Add stream to codec for extracting later
         codec=f"#{stream}: "+ codec
         if(codecs.get(streamtype)==None):
             codecs[streamtype]=[codec]
         else:
             codecs[streamtype]+=[codec]
-        #except:
-        #    pass
+
     logger.debug(codecs)
     for key in codecs.keys():
         choice=100
         size=len(codecs[key])
         found=False
+
+        # If copy only given, don't ask for audio and video streams
         if args.o:
             if key in ['Audio','Video']:
                 continue
+
+        # if subs not to be extracted, don't ask for subtitles
         if not args.x and 'Subtitle' in key:
             continue
+
+        # ask user until he presses '\n' or any valid number
         while choice>size:
             print_color(bcolors.OKCYAN,f"\n+++ Choose {key} stream: +++",bold=True)
             for j in range(size):
@@ -219,9 +231,13 @@ for filename in dirs:
                 temp=input()
                 if(temp!=''):
                     try:
+                        # try to convert choice to int
                         choice=int(temp)
+
+                        # try to extract choice
                         temp=codecs[key][choice-1]
                     except:
+                        # If failed, If invalid inputs
                         print_color(bcolors.FAIL,'- Error')
                         choice=100
 
@@ -233,7 +249,7 @@ for filename in dirs:
                     if(prefer.capitalize()!='N'):
                         preferred_codecs[key]=codecs[key][choice]
                     else:
-                        print_color(bcolors.OKGREEN,'Defaulting to yes',lineend=False)
+                        print_color(bcolors.OKGREEN,'Defaulting to yes')
                 codecs[key]=codecs[key][choice]
                 break
 
@@ -241,7 +257,7 @@ for filename in dirs:
        
     logger.debug(f"initial codecs: {codecs}")
 
-    # if codec is h264, no need to reencode
+    # if codec are allowed ones, no need to reencode
     streams=dict()
     for i in codecs.keys():
         streams[i]=codecs[i][3:4]
@@ -269,16 +285,22 @@ for filename in dirs:
                 if not args.o:
                     print_color(bcolors.WARNING,f"! Unsupported {key} format, Converting it")
                     if preferred_choices.get(key)==None:
+
+                        # extract the codec only
                         temp=codecs['Video'].split(':')[2]
                         if '(' in temp:
                             temp=temp.split('(')[0]
                         temp=temp.strip()
+
+                        # ask user
                         convert_vid=input(f"current video codec is {temp}, convert it to h264?(y/N)(default=N)")
+
                         # defaults to N so only checking if Y entered
                         if(convert_vid.capitalize()=='Y'):
                             codecs[key]='h264'
                         else:
                             codecs[key]='copy'
+
                         print_color(bcolors.OKCYAN,'Prefer this for other files also?(Y/n)(default=Y)',lineend=False)
                         prefer=input()
                         if(prefer.capitalize()!='N'):
@@ -286,13 +308,17 @@ for filename in dirs:
                         else:
                             print_color(bcolors.OKGREEN,'Defaulting to yes',lineend=False)
                     else:
+                        # If preferred choices found, use them
                         codecs[key]=preferred_choices[key]
                         print_color(bcolors.OKGREEN,f'+ Found {preferred_choices[key]} from preferred choices')
                     if codecs[key]!='copy':
+                        # If we are changing codecs, notifiy user
                         print_color(bcolors.WARNING,f"! Converting {key} format")
                 else:
+                    # if copy only
                     codecs[key]='copy'
-            else: #Subtitles don't need any warning
+            else: 
+                #Subtitles don't need any warning
                 codecs[key]=allowed_codecs[key]
 
     logger.debug("Streams are: " + str(streams))
@@ -332,6 +358,7 @@ for filename in dirs:
             print_color(bcolors.FAIL,f"- Err:{initial_subs_file} not found")
             success_subs=False
 
+    # If subtitle only flag given, copy the video to the folder 
     if(args.o):
         print_color(bcolors.HEADER,f"* Copying Video to output_folder as copy only conversion given")
 

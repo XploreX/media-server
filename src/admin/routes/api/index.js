@@ -9,4 +9,6 @@ router.use(
     require(config.root + '/src/admin/routes/api/user-server'),
 );
 
+router.use(require(config.root + '/src/admin/routes/api/settings'));
+router.use(require(config.root + '/src/admin/routes/api/logs'));
 module.exports = router;

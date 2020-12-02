@@ -100,7 +100,7 @@
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                  <form id="settingsform" action="/api/update" method="post">
+                  <form id="settingsform" action="/api/update-settings" method="post">
                     <div class="form-group">
                       <label for="location">Location:</label>
                       <input name="location" type="text" class="form-control" id="location" placeholder="Enter Location"
@@ -247,7 +247,7 @@
         submitHandler: (form) => {
           $.ajax({
             type: "POST",
-            url: '/api/update',
+            url: '/api/update-settings',
             data: $(form).serialize(), // serializes the form's elements.
             success: (data) => {
               if(data=="OK"){

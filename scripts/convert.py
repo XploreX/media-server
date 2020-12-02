@@ -269,7 +269,11 @@ for filename in dirs:
                 if not args.o:
                     print_color(bcolors.WARNING,f"! Unsupported {key} format, Converting it")
                     if preferred_choices.get(key)==None:
-                        convert_vid=input(f"current video codec is {codecs['Video']}, convert it to h264?(y/N)(default=N)")
+                        temp=codecs['Video'].split(':')[2]
+                        if '(' in temp:
+                            temp=temp.split('(')[0]
+                        temp=temp.strip()
+                        convert_vid=input(f"current video codec is {temp}, convert it to h264?(y/N)(default=N)")
                         # defaults to N so only checking if Y entered
                         if(convert_vid.capitalize()=='Y'):
                             codecs[key]='h264'
@@ -284,6 +288,8 @@ for filename in dirs:
                     else:
                         codecs[key]=preferred_choices[key]
                         print_color(bcolors.OKGREEN,f'+ Found {preferred_choices[key]} from preferred choices')
+                    if codecs[key]!='copy':
+                        print_color(bcolors.WARNING,f"! Converting {key} format")
                 else:
                     codecs[key]='copy'
             else: #Subtitles don't need any warning

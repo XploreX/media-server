@@ -35,6 +35,7 @@ parser.add_argument(
     '-s', help='if subtitles are to be used from srt file available in the folder', action="store_true")
 parser.add_argument(
     '-f', help='try faster conversion(may not work)', action="store_true")
+parser.add_argument('-y',help='allow overwrites',action='store_true')
 parser.add_argument('-o', help='convert only subtitles for the videos',action="store_true")
 parser.add_argument('-d', help='use default answers',action="store_true")
 parser.add_argument('-n', help='no subs(default)', action="store_true")
@@ -61,6 +62,10 @@ else:
     dirs = [os.path.basename(filename) for filename in os.listdir(
         args.path) if filename.endswith((".mkv",".mp4",".avi",".wmv",".mov",".ogg",".flv",".mpeg",".mpg"))]
     basedir = args.path
+
+# These will store the preferred user answer for the run
+preferred_codecs=dict()
+preferred_choices=dict()
 
 # create output dirs
 output_dir = os.path.join(basedir, "converted_videos")
@@ -95,6 +100,23 @@ def subs_error_ffmpeg(output):
         print_color(bcolors.FAIL,'- Subtitles not found in Video')
         return True 
     return False
+
+def overwrite_if_exists(path):
+    if os.path.exists(path):
+        if not args.y:
+            print_color(bcolors.WARNING,f'! {os.path.basename(path)} exists. Do you want to overwrite it?(y/N)(default=N)',lineend=False)
+            temp=input()
+            if(temp.capitalize()=='Y'):
+                return True
+                print_color(bcolors.OKGREEN,f'+ Overwriting File')
+            else:
+                print_color(bcolors.FAIL,f'- Skipping File')
+                return False
+        else:
+            print_color(bcolors.WARNING,f'! {os.path.basename(path)} exists. Overwriting file as -y passed')
+            return True
+    else:
+        return True
 
 # A helper function to get the output from processes and handle errors based function given
 def get_output(process,error_handler=None):
@@ -140,9 +162,6 @@ if(not args.s and not args.x):
     print_color(bcolors.OKGREEN,f"+ Defaulting to No Subtitles as no suitable arguments passed",True)
     args.n=True
 
-# These will store the preferred user answer for the run
-preferred_codecs=dict()
-preferred_choices=dict()
 
 # Iterating of files
 for filename in dirs:
@@ -343,22 +362,24 @@ for filename in dirs:
         logger.debug(f"subsfile: {initial_subs_file}")
 
         if(initial_subs_file != "" and os.path.isfile(initial_subs_file)):
+            if overwrite_if_exists(final_subs_file):
+                print_color(bcolors.OKCYAN,f"+ Extracting subs from {initial_subs_file}")
 
-            print_color(bcolors.OKCYAN,f"+ Extracting subs from {initial_subs_file}")
+                # create the shell command
+                sh = f'ffmpeg -y -i "{initial_subs_file}" -map 0:{streams["Subtitle"]} "{final_subs_file}"'
+                logger.debug(sh)
 
-            # create the shell command
-            sh = f'ffmpeg -y -i "{initial_subs_file}" -map 0:{streams["Subtitle"]} "{final_subs_file}"'
-            logger.debug(sh)
+                # spawn popen process
+                process = sp.Popen(sh, shell=True, universal_newlines=True,
+                                stderr=sp.STDOUT, stdout=sp.PIPE)
 
-            # spawn popen process
-            process = sp.Popen(sh, shell=True, universal_newlines=True,
-                            stderr=sp.STDOUT, stdout=sp.PIPE)
-
-            success_subs=get_output(process,subs_error_ffmpeg)
-            if(success_subs):
-                print_color(bcolors.OKGREEN,f"+ Extracted Subtitles")
+                success_subs=get_output(process,subs_error_ffmpeg)
+                if(success_subs):
+                    print_color(bcolors.OKGREEN,f"+ Extracted Subtitles")
+                else:
+                    print_color(bcolors.FAIL,f"- Err Extracting Subtitles")
             else:
-                print_color(bcolors.FAIL,f"- Err Extracting Subtitles")
+                success_subs=False
         else:
             print_color(bcolors.FAIL,f"- Err:{initial_subs_file} not found")
             success_subs=False
@@ -368,39 +389,42 @@ for filename in dirs:
         print_color(bcolors.HEADER,f"* Copying Video to output_folder as copy only conversion given")
 
         # Using ffmpeg to show the copy progress, shutil copy doesn't have any helper function for that
-        sh = f'ffmpeg -y -vsync 0 -hwaccel auto -i "{os.path.join(basedir,filename)}" -c copy "{os.path.join(output_dir,filename)}"'
+        output_file_name=(os.path.join(output_dir,filename))
+        if(overwrite_if_exists(output_file_name)):
+            sh = f'ffmpeg -y -vsync 0 -hwaccel auto -i "{os.path.join(basedir,filename)}" -c copy "{output_file_name}"'
 
-        logger.debug(sh)
-        process=sp.Popen(sh,shell=True,stderr=sp.STDOUT,stdout=sp.PIPE,universal_newlines=True)
+            logger.debug(sh)
+            process=sp.Popen(sh,shell=True,stderr=sp.STDOUT,stdout=sp.PIPE,universal_newlines=True)
 
-        success=get_output(process)
-        
-        if(success):
-            print_color(bcolors.OKGREEN,f"+ Video Copied")
-        else:
-            print_color(bcolors.FAIL,f"- Some Error Occurred While Copying")
-        continue
+            success=get_output(process)
+            
+            if(success):
+                print_color(bcolors.OKGREEN,f"+ Video Copied")
+            else:
+                print_color(bcolors.FAIL,f"- Some Error Occurred While Copying")
+            continue
 
     logger.debug(f"final codecs: {codecs}")
     print_color(bcolors.OKCYAN,f"+ converting video {filename}")
 
     # if subs are successful and subtitles are to be embedded
-    if(not args.n and success_subs==True and not args.f):
-        sh = f'ffmpeg -y -vsync 0 -threads {os.cpu_count()} -hwaccel auto -i "{os.path.join(basedir,filename)}" '
-        #sh+=f'-f webvtt -i "{final_subs_file}" -map 1:0 '
-        sh+=f'-f webvtt -i "{final_subs_file}" -map 1:0 '
-        #sh+=f'-map 0:0 -map 0:1 -c:v {codecs["Video"]} -c:a {codecs["Audio"]} -c:s {codecs["Subtitle"]} "{final_video_file}"'
-        sh+=f'-map 0:{streams["Video"]} -map 0:{streams["Audio"]} -c:v {codecs["Video"]} -c:a {codecs["Audio"]} -c:s {codecs["Subtitle"]} "{final_video_file}"'
-    else:
-        sh = f'ffmpeg -y -vsync 0 -threads {os.cpu_count()} -hwaccel auto -i "{os.path.join(basedir,filename)}" -map 0:{streams["Video"]} -map 0:{streams["Audio"]} -c:v {codecs["Video"]} -c:a {codecs["Audio"]} "{final_video_file}"'
+    if(overwrite_if_exists(final_video_file)):
+        if(not args.n and success_subs==True and not args.f):
+            sh = f'ffmpeg -y -vsync 0 -threads {os.cpu_count()} -hwaccel auto -i "{os.path.join(basedir,filename)}" '
+            #sh+=f'-f webvtt -i "{final_subs_file}" -map 1:0 '
+            sh+=f'-f webvtt -i "{final_subs_file}" -map 1:0 '
+            #sh+=f'-map 0:0 -map 0:1 -c:v {codecs["Video"]} -c:a {codecs["Audio"]} -c:s {codecs["Subtitle"]} "{final_video_file}"'
+            sh+=f'-map 0:{streams["Video"]} -map 0:{streams["Audio"]} -c:v {codecs["Video"]} -c:a {codecs["Audio"]} -c:s {codecs["Subtitle"]} "{final_video_file}"'
+        else:
+            sh = f'ffmpeg -y -vsync 0 -threads {os.cpu_count()} -hwaccel auto -i "{os.path.join(basedir,filename)}" -map 0:{streams["Video"]} -map 0:{streams["Audio"]} -c:v {codecs["Video"]} -c:a {codecs["Audio"]} "{final_video_file}"'
 
-    logger.debug(sh)
-    process=sp.Popen(sh,shell=True,stderr=sp.STDOUT,stdout=sp.PIPE,universal_newlines=True)
+        logger.debug(sh)
+        process=sp.Popen(sh,shell=True,stderr=sp.STDOUT,stdout=sp.PIPE,universal_newlines=True)
 
-    success=get_output(process)
-    if(success):
-        print_color(bcolors.OKGREEN,f"+ Converted {filename}")
-    else:
-        print_color(bcolors.FAIL,f"- Some error occurred while converting {filename}")
+        success=get_output(process)
+        if(success):
+            print_color(bcolors.OKGREEN,f"+ Converted {filename}")
+        else:
+            print_color(bcolors.FAIL,f"- Some error occurred while converting {filename}")
 
 

@@ -271,7 +271,7 @@ for filename in dirs:
                     if preferred_choices.get(key)==None:
                         convert_vid=input(f"current video codec is {codecs['Video']}, convert it to h264?(y/N)(default=N)")
                         # defaults to N so only checking if Y entered
-                        if(convert_vid.capitalize=='Y'):
+                        if(convert_vid.capitalize()=='Y'):
                             codecs[key]='h264'
                         else:
                             codecs[key]='copy'

@@ -36,6 +36,7 @@ parser.add_argument(
 parser.add_argument(
     '-f', help='try faster conversion(may not work)', action="store_true")
 parser.add_argument('-o', help='convert only subtitles for the videos',action="store_true")
+parser.add_argument('-d', help='use default answers',action="store_true")
 parser.add_argument('-n', help='no subs(default)', action="store_true")
 parser.add_argument('-v', help='verbose', action="store_true")
 args = parser.parse_args()
@@ -217,6 +218,10 @@ for filename in dirs:
                 if preferred_codecs.get(key)==None:
                     if 'default' in codecs[key][j]:
                         choice=j+1
+                        if args.d:
+                            print_color(bcolors.OKGREEN,f'+ Using Default stream')
+                            found=True
+                            break
                 if preferred_codecs.get(key)!=None and preferred_codecs[key] in codecs[key][j]:
                     print_color(bcolors.OKGREEN,f'+ Found {preferred_codecs[key]} from preferred choices')
                     found=True
@@ -243,7 +248,7 @@ for filename in dirs:
 
             if choice<=size:
                 choice-=1
-                if preferred_codecs.get(key)==None:
+                if not args.d and preferred_codecs.get(key)==None:
                     print_color(bcolors.OKCYAN,'Prefer this for other files also?(Y/n)(default=Y)',lineend=False)
                     prefer=input()
                     if(prefer.capitalize()!='N'):

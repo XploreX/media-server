@@ -55,7 +55,7 @@
   <div class="col align-items-center">
     <div class="row">
       <div class="col text-left align-self-center">
-        <a type="button" class="btn-lg btn-danger" href="{{prev}}">Prev</a>
+        <a id="prev" type="button" class="btn-lg btn-danger" href="{{prev}}">Prev</a>
       </div>
       <div class="col-10 text-center align-self-center">
         <div class="container">
@@ -63,7 +63,7 @@
             <div class="col">
               <kbd class="d-flex justify-content-center">
                 <h3 class="align-self-center"> {{videoName}} </h3>
-                <a type="button" class="m-3 btn btn-success" href="..">Go Back to Directory</a>
+                <a id="home_page" type="button" class="m-3 btn btn-success" href="..">Go Back to Directory</a>
               </kbd>
             </div>
           </div>
@@ -83,7 +83,7 @@
         </div>
       </div>
       <div class="col text-right align-self-center">
-        <a type="button" class="btn-lg btn-primary" href="{{next}}">Next</a>
+        <a id="next" type="button" class="btn-lg btn-primary" href="{{next}}">Next</a>
       </div>
     </div>
     
@@ -139,6 +139,9 @@
   <script>
     $(document).ready(() => {
       const video = document.querySelector('video');
+      video.onended=()=>{
+        document.getElementById("next").click();
+      }
       axios.get('/api/video/get-current-time', {
         params: {
           source: '{{{videoSource}}}'

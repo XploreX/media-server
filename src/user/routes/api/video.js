@@ -1,7 +1,8 @@
+const config = global.__config;
+
 const express = require('express');
 const {StatusCodes} = require('http-status-codes');
 
-const config = global.__config;
 const root = config.root;
 const utility = require(root + '/src/utility');
 

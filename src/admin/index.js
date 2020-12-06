@@ -4,10 +4,11 @@ const express = require('express');
 const session = require('express-session');
 const mustacheExpress = require('mustache-express');
 const FileStore = require('session-file-store')(session);
+const fs = require('fs');
 
 const adminSessionConfig = require(config.root +
   '/src/admin/admin-session-config');
-const settings = require(config.root + '/src/settings');
+const settings = require(config.root + '/src/all-settings');
 
 const app = express();
 
@@ -32,14 +33,22 @@ app.use(
 app.use('/api', require(config.root + '/src/admin/routes/api'));
 
 app.get('/', (req, res) => {
+  if (settings.verbose >= 1) req.session.logging = true;
+  if (settings.verbose == 2) req.session.logHeaders = true;
+  req.session.port = settings.port;
+  req.session.location = settings.location;
   res.render('index.mustache', {
-    port: settings.port || req.session.port,
-    location: settings.location || req.session.location,
-    logging: settings.logging || req.session.logging,
-    logHeaders: settings.logHeaders || req.session.logHeaders,
+    port: req.session.port,
+    location: req.session.location,
+    logging: req.session.logging,
+    logHeaders: req.session.logHeaders,
   });
 });
 
+if (!fs.existsSync(config.logFile)) {
+  fs.writeFileSync(config.logFile, '');
+  console.log('Made blank log file');
+}
 app.use('/logs', express.static(config.logFile));
 app.use('/static', express.static(config.root + '/src/admin/assets'));
 

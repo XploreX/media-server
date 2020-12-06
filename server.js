@@ -7,7 +7,7 @@ require('dotenv').config();
 global.__config = require(__dirname + '/config');
 const config = global.__config;
 
-const settings = require(config.root + '/src/settings');
+const settings = require(config.root + '/src/all-settings');
 const startServer = require(config.root + '/src/utility/startServer.js');
 // const argv = parseArgs(process.argv.slice(2));
 

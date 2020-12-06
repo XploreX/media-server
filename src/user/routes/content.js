@@ -1,12 +1,13 @@
+const config = global.__config;
+
 const fs = require('fs');
 const path = require('path');
 
 const express = require('express');
 const serveIndex = require('serve-index');
 
-const config = global.__config;
 const services = require(config.root + '/src/user/services');
-const settings = require(config.root + '/src/settings');
+const settings = require(config.root + '/src/client-settings');
 
 // eslint-disable-next-line new-cap
 const router = express.Router();

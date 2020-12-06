@@ -1,19 +1,21 @@
 const config = global.__config;
+
 const express = require('express');
+const fs = require('fs');
 
 const startServer = require(config.root + '/src/utility/startServer');
-const settings = require(config.root + '/src/settings');
+const settings = require(config.root + '/src/all-settings');
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
 let server;
-let serverRunning = false;
+settings.serverRunning = false;
 
 router.get('/start', (req, res) => {
   delete require.cache[require.resolve(config.root + '/src/user/index.js')];
   const clientApp = require(config.root + '/src/user/index.js');
   server = startServer(clientApp, settings.port, config.logFile);
-  serverRunning = true;
+  settings.serverRunning = true;
   res.send('OK');
 });
 
@@ -24,12 +26,12 @@ router.get('/stop', (req, res) => {
   console.log(message);
   stream.write(message + '\n');
   stream.end();
-  serverRunning = false;
+  settings.serverRunning = false;
   res.send('OK');
 });
 
 router.get('/status', (req, res) => {
-  if (serverRunning == true) res.send('OK');
+  if (settings.serverRunning == true) res.send('OK');
   else res.send('FAIL');
 });
 

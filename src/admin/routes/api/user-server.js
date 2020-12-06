@@ -1,4 +1,5 @@
 const config = global.__config;
+const requireUncached = require(config.root + '/src/utility/requireUncached');
 
 const express = require('express');
 const fs = require('fs');
@@ -12,8 +13,7 @@ let server;
 settings.serverRunning = false;
 
 router.get('/start', (req, res) => {
-  delete require.cache[require.resolve(config.root + '/src/user/index.js')];
-  const clientApp = require(config.root + '/src/user/index.js');
+  const clientApp = requireUncached(config.root + '/src/user/index.js');
   server = startServer(clientApp, settings.port, config.logFile);
   settings.serverRunning = true;
   res.send('OK');

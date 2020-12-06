@@ -9,6 +9,8 @@ const fs = require('fs');
 const adminSessionConfig = require(config.root +
   '/src/admin/admin-session-config');
 const settings = require(config.root + '/src/all-settings');
+const sync = require(config.root +
+  '/src/admin/services/syncSettingsAndSession');
 
 const app = express();
 
@@ -33,14 +35,12 @@ app.use(
 app.use('/api', require(config.root + '/src/admin/routes/api'));
 
 app.get('/', (req, res) => {
-  if (settings.verbose >= 1) req.session.logging = true;
-  if (settings.verbose == 2) req.session.logHeaders = true;
-  req.session.port = settings.port;
-  req.session.location = settings.location;
+  sync(settings, req.session);
   res.render('index.mustache', {
     port: req.session.port,
     location: req.session.location,
     logging: req.session.logging,
+    verbose: req.session.verbose,
     logHeaders: req.session.logHeaders,
   });
 });

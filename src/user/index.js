@@ -1,4 +1,5 @@
 const config = global.__config;
+const requireUncached = require(config.root + '/src/utility/requireUncached');
 
 const express = require('express');
 const session = require('express-session');
@@ -9,7 +10,7 @@ const favicon = require('serve-favicon');
 const {enableMorgan} = require(config.root + '/src/user/services/logging.js');
 
 const apiRouter = require(config.root + '/src/user/routes/api');
-const contentRouter = require(config.root + '/src/user/routes/content');
+const contentRouter = requireUncached(config.root + '/src/user/routes/content');
 const settings = require(config.root + '/src/client-settings');
 const userSessionConfig = require(config.root +
   '/src/user/user-session-config');

@@ -83,7 +83,7 @@
             <a id="serverstate" href="#"
               class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm text-white-100">
               {{! <i class="fas fa-sm text-white-50"></i> }}
-              Start Server</a>
+              Save and Start Server</a>
           </div>
 
           <!-- Content Row -->
@@ -118,26 +118,17 @@
                     </div>
                     <br>
                     <div class="form-group custom-control custom-switch">
-                      {{#logging}}
-                      <input name="logging" type="checkbox" class="custom-control-input" id="logging" checked>
-                      {{/logging}}
-                      {{^logging}}
-                      <input name="logging" type="checkbox" class="custom-control-input" id="logging">
-                      {{/logging}}
+                      <input type="checkbox" class="custom-control-input" id="logging">
                       <label class="custom-control-label" for="logging">
                         Enable Logging</label>
                     </div>
                     <br>
                     <div class="form-group custom-control custom-switch">
-                      {{#logHeaders}}
-                      <input name="logHeaders" type="checkbox" class="custom-control-input" id="logHeaders" checked>
-                      {{/logHeaders}}
-                      {{^logHeaders}}
-                      <input name="logHeaders" type="checkbox" class="custom-control-input" id="logHeaders">
-                      {{/logHeaders}}
+                      <input type="checkbox" class="custom-control-input" id="logHeaders">
                       <label class="custom-control-label" for="logHeaders">
                         Log Headers</label>
                     </div>
+                    <input name="verbose" type="number" class="custom-control-input" id="verbose" value="{{verbose}}" style="hidden">
                     {{! <button type="submit" class="btn btn-primary">Submit</button> }}
                   </form>
                 </div>
@@ -225,9 +216,9 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
   <script>
-    function submitForm() {
+    async function submitForm() {
       let form = $("#settingsform");
-      form.validate({
+      await form.validate({
         rules: {
           location: {
             required: true
@@ -244,11 +235,13 @@
             required: "port is required",
           },
         },
-        submitHandler: (form) => {
+        submitHandler: await function (form){
+          var data=$(form).serialize()// serializes the form's elements.
+          data['verbose']=1;
           $.ajax({
             type: "POST",
             url: '/api/update-settings',
-            data: $(form).serialize(), // serializes the form's elements.
+            data: data, 
             success: (data) => {
               if(data=="OK"){
                 $("#submitbtn")[0].innerHTML="Saved!";
@@ -260,13 +253,32 @@
           })
         }
       });
-      form.submit()
-
+      form.submit();
+      return;
     }
     $(document).ready(() => {
-      const startText = 'Start Server';
+      const startText = 'Save and Start Server';
       const stopText = 'Stop Server'
       let btn = $("#serverstate");
+      $('#settingsform :checkbox').change(function() {
+          // this will contain a reference to the checkbox   
+          if (this.checked) {
+              $('#verbose').val(parseInt($('#verbose').val())+1);
+              // the checkbox is now checked 
+          } else {
+              $('#verbose').val(parseInt($('#verbose').val())-1);
+              // the checkbox is now no longer checked
+          }
+      });
+
+      if($('#verbose').val()=="1"){
+        $('#logging').prop('checked',true);
+      }
+      if($('#verbose').val()=="2"){
+        $('#logging').prop('checked',true);
+        $('#logHeaders').prop('checked',true);
+      }
+
       $.ajax({
         url: '/api/user-server/status',
         success: (res) => {
@@ -274,20 +286,22 @@
             btn[0].innerHTML = stopText;
           else if (res == 'FAIL')
             btn[0].innerHTML = startText;
-
         }
       })
       btn.click(() => {
         console.log(btn[0].innerHTML)
         if (btn[0].innerHTML.trim() == startText) {
           btn[0].innerHTML = "Starting...";
-          $.ajax({
+          submitForm();
+          setTimeout(()=>{
+            $.ajax({
             url: '/api/user-server/start', success: (res) => {
               if (res === "OK") {
                 btn[0].innerHTML = stopText
               }
             }
           });
+          },1000);
         }
         else {
           btn[0].innerHTML = "Stopping...";
@@ -304,7 +318,14 @@
         $.ajax({
           url: '/api/clearlogs', success: (res) => {
             if (res === "OK") {
+              $("#clearlogs")[0].innerHTML="Cleared!";
             }
+            else if(res==="FAIL"){
+              $("#clearlogs")[0].innerHTML="Failed! Try stopping the server";
+            }
+            setTimeout(()=>{
+              $("#clearlogs")[0].innerHTML="Clear Logs"
+            },2000);
           }
         });
       });

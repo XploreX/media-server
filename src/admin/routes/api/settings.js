@@ -10,27 +10,15 @@ router.post('/update-settings', (req, res) => {
   console.log(req.body);
 
   if (req.body.location) {
-    settings.location = req.body.location;
-    req.session.location = settings.location;
+    req.session.location = settings.location = req.body.location;
   }
 
   if (req.body.port) {
-    settings.port = req.body.port;
-    req.session.port = settings.port;
+    req.session.port = settings.port = req.body.port;
   }
 
-  if (req.body.logging) {
-    req.session.logging = true;
-    settings.verbose = 1;
-  } else {
-    req.session.logging = false;
-  }
-
-  if (req.body.logHeaders) {
-    req.session.logHeaders = true;
-    settings.verbose = 2;
-  } else {
-    req.session.logHeaders = false;
+  if (req.body.verbose) {
+    req.session.verbose = settings.verbose = parseInt(req.body.verbose);
   }
 
   res.send('OK');

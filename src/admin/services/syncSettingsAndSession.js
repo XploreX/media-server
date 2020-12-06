@@ -1,5 +1,3 @@
-const session = require('express-session');
-
 /**
  * @param {Object} settings the express app to start morgan-body on
  * @param {session} session relative file path to logfile

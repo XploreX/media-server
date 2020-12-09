@@ -81,9 +81,9 @@
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
             <a id="serverstate" href="#"
-              class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm text-white-100">
+              class="d-none d-sm-inline-block btn btn-dark shadow-sm text-white">
               {{! <i class="fas fa-sm text-white-50"></i> }}
-              Save and Start Server</a>
+              Start Server</a>
           </div>
 
           <!-- Content Row -->
@@ -91,7 +91,7 @@
           <div class="row">
 
             <!-- Area Chart -->
-            <div class="col-xl-8 col-lg-7">
+            <div class="col">
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -136,7 +136,7 @@
             </div>
 
             <!-- Pie Chart -->
-            <div class="col-xl-4 col-lg-5">
+            {{! <div class="col-xl-4 col-lg-5">
               <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -160,7 +160,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> }}
           </div>
 
           <!-- Content Row -->
@@ -257,7 +257,7 @@
       return;
     }
     $(document).ready(() => {
-      const startText = 'Save and Start Server';
+      const startText = 'Start Server';
       const stopText = 'Stop Server'
       let btn = $("#serverstate");
       $('#settingsform :checkbox').change(function() {
@@ -298,6 +298,7 @@
             url: '/api/user-server/start', success: (res) => {
               if (res === "OK") {
                 btn[0].innerHTML = stopText
+                btn.toggleClass("btn-dark btn-danger");
               }
             }
           });
@@ -309,6 +310,7 @@
             url: '/api/user-server/stop', success: (res) => {
               if (res === "OK") {
                 btn[0].innerHTML = startText
+                btn.toggleClass("btn-dark btn-danger");
               }
             }
           });

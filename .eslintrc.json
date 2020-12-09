@@ -11,6 +11,6 @@
   },
   "rules": {},
   "ignorePatterns": [
-    "src/user/assets/**/*"
+    "src/**/assets/**/*"
   ]
 }

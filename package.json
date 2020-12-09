@@ -11,12 +11,15 @@
     "bin": "server.js",
     "pkg": {
         "assets": [
-            "./src/**"
+            "./src/**",
+            "./config.js"
         ],
         "targets": [
             "node14-linux-x64",
             "node14-win-x64",
-            "node14-macos-x64"
+            "node14-macos-x64",
+            "node13-win-x86",
+            "node13-linux-x86"
         ]
     },
     "keywords": [
@@ -35,6 +38,7 @@
         "morgan-body": "^2.5.2",
         "mustache": "^4.0.1",
         "mustache-express": "^1.3.0",
+        "open": "^7.3.0",
         "serve-favicon": "^2.5.0",
         "serve-index": "^1.9.1",
         "session-file-store": "^1.5.0",

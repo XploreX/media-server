@@ -1,6 +1,6 @@
-const fs = require('fs');
-
 const config = global.__config;
+
+const fs = require('fs');
 
 const supportedVideoFormatsReg = new RegExp(
     '\\.' + '(' + config.supportedVideoFormats.join('|') + ')' + '$',

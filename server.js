@@ -1,4 +1,4 @@
-const path = require('path');
+const open = require('open');
 
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
@@ -7,7 +7,7 @@ require('dotenv').config();
 global.__config = require(__dirname + '/config');
 const config = global.__config;
 
-const settings = require(config.root + '/src/settings');
+const settings = require(config.root + '/src/all-settings');
 const startServer = require(config.root + '/src/utility/startServer.js');
 // const argv = parseArgs(process.argv.slice(2));
 
@@ -47,17 +47,19 @@ if (process.argv.slice(2).length === 0 && settings.location == undefined) {
 }
 
 const PORT = argv.port || process.env.PORT || 3000;
+settings.port = PORT;
 
 if (argv.g) {
   const admin = require(config.root + '/src/admin/index.js');
   const adminServer = admin.listen(parseInt(PORT) + 1, 'localhost', () => {
     console.log('admin server is up');
-    console.log(
-        'listening at http://' +
-        adminServer.address().address +
-        ':' +
-        adminServer.address().port,
-    );
+    const url =
+      'http://' +
+      adminServer.address().address +
+      ':' +
+      adminServer.address().port;
+    console.log('listening at ' + url);
+    open(url);
   });
   admin.on('close', () => {});
 } else {

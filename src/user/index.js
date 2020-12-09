@@ -1,14 +1,17 @@
+const config = global.__config;
+const requireUncached = require(config.root + '/src/utility/requireUncached');
+
 const express = require('express');
 const session = require('express-session');
-const morganBody = require('morgan-body');
-const mustacheExpress = require('mustache-express');
 const FileStore = require('session-file-store')(session);
+const mustacheExpress = require('mustache-express');
 const favicon = require('serve-favicon');
 
-const config = global.__config;
+const {enableMorgan} = require(config.root + '/src/user/services/logging.js');
+
 const apiRouter = require(config.root + '/src/user/routes/api');
-const contentRouter = require(config.root + '/src/user/routes/content');
-const settings = require(config.root + '/src/settings');
+const contentRouter = requireUncached(config.root + '/src/user/routes/content');
+const settings = require(config.root + '/src/client-settings');
 const userSessionConfig = require(config.root +
   '/src/user/user-session-config');
 
@@ -38,8 +41,12 @@ app.get('/', (req, res) => {
   res.redirect('/content');
 });
 
-if (settings.verbose == 1) morganBody(app, {logAllReqHeader: false});
-if (settings.verbose >= 2) morganBody(app, {logAllReqHeader: true});
+if (settings.verbose == 1) {
+  enableMorgan(app, config.logFile, {logAllReqHeader: false});
+}
+if (settings.verbose >= 2) {
+  enableMorgan(app, config.logFile, {logAllReqHeader: true});
+}
 app.use('/api', apiRouter);
 app.use('/content', contentRouter);
 

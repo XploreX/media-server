@@ -5,3 +5,4 @@ pkg_files/
 sessions/
 .vscode/
 .env
+logs/

@@ -146,6 +146,10 @@ the device running the application.
 - ### Make your awesome changes
 - ### Send us a PR with your changes
 
+## CHANGELOG
+
+You can see the changes [here](CHANGELOG.md)
+
 ## Noticed any bugs or have any suggestions?
 
 Feel free to open up [issue](https://github.com/XploreX/MediaServer/issues) and we will try to work on them

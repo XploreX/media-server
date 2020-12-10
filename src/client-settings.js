@@ -4,7 +4,7 @@ const root = config.root;
 
 const settings = require(root + '/src/all-settings');
 
-requiredKeys = ['location', 'verbose'];
+requiredKeys = ['location', 'verbose', 'image', 'video'];
 obj = {};
 
 requiredKeys.forEach((key) => {

@@ -7,15 +7,13 @@ const path = require('path');
 const express = require('express');
 const serveIndex = require('serve-index');
 
-const services = require(config.root + '/src/user/services');
+const contentService = require(config.root + '/src/user/services/content');
 const settings = requireUncached(config.root + '/src/client-settings');
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
 const content = settings.location;
-const supportedVideoFormatsReg = services.video.supportedVideoFormatsReg;
-const supportedImageFormatsReg = services.image.supportedImageFormatsReg;
 
 router.get(
     '/*',
@@ -25,8 +23,7 @@ router.get(
         return (
           (fs.existsSync(path.join(dir, file)) &&
           fs.lstatSync(path.join(dir, file)).isDirectory()) ||
-        supportedVideoFormatsReg.test(file) ||
-        supportedImageFormatsReg.test(file)
+        contentService.contentAllowed(file)
         );
       },
     }),

@@ -6,19 +6,19 @@ const fs = require('fs');
 const express = require('express');
 
 const settings = require(config.root + '/src/client-settings');
-const services = require(config.root + '/src/user/services');
+const contentService = require(config.root + '/src/user/services/content');
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
 const contentLocation = settings.location;
-const supportedVideoFormatsReg = services.video.supportedVideoFormatsReg;
+const supportedVideoFormatsReg = contentService.video.supportedVideoFormatsReg;
 
 // route to handle video files
 router.get('/*', (req, res, next) => {
   req.url = decodeURI(req.url);
   const absoluteFilePath = path.join(contentLocation, unescape(req.url));
   // console.log(absoluteFilePath);
-  if (!services.video.isSupportedVideo(absoluteFilePath)) {
+  if (!contentService.video.isSupportedVideo(absoluteFilePath)) {
     return next();
   } else {
     const originalFileName = path.basename(absoluteFilePath);

@@ -1,4 +1,4 @@
-# MediaServer
+# media-server
 
 [![build](https://img.shields.io/github/workflow/status/XploreX/MediaServer/Caching%20with%20npm)](https://github.com/XploreX/MediaServer/actions)
 [![issues](https://img.shields.io/github/issues/XploreX/MediaServer)](https://github.com/XploreX/MediaServer/issues)

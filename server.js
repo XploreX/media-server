@@ -40,6 +40,11 @@ const argv = yargs(hideBin(process.argv))
         description: 'enable display of images',
         default: false,
       });
+      yargs.option('video', {
+        type: 'boolean',
+        description: 'enable display of videos',
+        default: true,
+      });
     })
     .alias('h', 'help')
     .version(false).argv;

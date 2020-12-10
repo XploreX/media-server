@@ -35,6 +35,11 @@ const argv = yargs(hideBin(process.argv))
         type: 'boolean',
         description: 'open gui mode for configuring settings',
       });
+      yargs.option('image', {
+        type: 'boolean',
+        description: 'enable display of images',
+        default: false,
+      });
     })
     .alias('h', 'help')
     .version(false).argv;
@@ -48,6 +53,8 @@ if (process.argv.slice(2).length === 0 && settings.location == undefined) {
 
 const PORT = argv.port || process.env.PORT || 3000;
 settings.port = PORT;
+
+console.log(settings);
 
 if (argv.g) {
   const admin = require(config.root + '/src/admin/index.js');

@@ -24,10 +24,9 @@ router.get('/*', (req, res, next) => {
     return next();
   }
 
-  let files = fs.readdirSync(path.dirname(absoluteFilePath))
-      .filter((file) => {
-        return contentService.image.supportedImageFormatsReg.test(file);
-      });
+  let files = fs.readdirSync(path.dirname(absoluteFilePath)).filter((file) => {
+    return contentService.image.supportedImageFormatsReg.test(file);
+  });
 
   files = files.map((file) => {
     return path.join(path.dirname(req.url), file);

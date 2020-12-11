@@ -45,6 +45,13 @@ app.get('/', (req, res) => {
   });
 });
 
+app.post('/exit', (req, res) => {
+  res.send('OK');
+  setInterval(() => {
+    process.exit(0);
+  }, 1000);
+});
+
 if (!fs.existsSync(config.logFile)) {
   fs.writeFileSync(config.logFile, '');
   console.log('Made blank log file');

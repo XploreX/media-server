@@ -80,10 +80,14 @@
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-            <a id="serverstate" href="#"
+            <div class="d-sm-flex align-items-right justify-content-end">
+            <button id="adminserverstate"
+              class="d-none d-sm-inline-block btn btn-warning shadow-sm text-dark mr-4" onclick="stopAdminServer(event)">
+              Stop Admin Server</button>
+            <button id="serverstate"
               class="d-none d-sm-inline-block btn btn-dark shadow-sm text-white">
-              {{! <i class="fas fa-sm text-white-50"></i> }}
-              Start Server</a>
+              Start Media Server</button>
+            </div>
           </div>
 
           <!-- Content Row -->
@@ -216,6 +220,22 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
   <script>
+    function stopAdminServer(event) {
+      console.log(event.toElement);
+      event.toElement.innerHTML="Stopping..."
+      $.ajax({
+            type: "POST",
+            url: '/exit',
+            success: (data) => {
+              if(data=="OK"){
+                event.toElement.innerHTML="Stopped!"
+                setInterval(()=>{
+                window.close();
+                },1000);
+              }
+            }
+      })
+    }
     async function submitForm() {
       let form = $("#settingsform");
       await form.validate({
@@ -257,7 +277,7 @@
       return;
     }
     $(document).ready(() => {
-      const startText = 'Start Server';
+      const startText = 'Start Media Server';
       const stopText = 'Stop Server'
       let btn = $("#serverstate");
       $('#settingsform :checkbox').change(function() {

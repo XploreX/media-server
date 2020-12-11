@@ -20,23 +20,65 @@ Don't worry, MediaServer has come to your rescue. It is a local media server to 
 - mkv
 - avi 
 
+
 ### Extension allowed for subtitles
 
 - srt
 - vtt
 
-In this documentation, we will refer to directory containing media content which have to be served as `media content directory`.
+**Note:** You can use our convert script provided to convert your media to specified format if not in the above extension. Please have a look at [FAQs](#faqs)
+
+## Table Of Contents
+- [Usage](#usage)
+  * [Using GUI](#using-gui)
+    + [Steps](#steps)
+  * [Using CLI](#using-cli)
+    + [Linux](#linux)
+    + [Windows](#windows)
+    + [MacOS](#macos)
+- [Screenshots](#screenshots)
+- [How to use from source code](#how-to-use-from-source-code)
+- [FAQs](#faqs)
+  * [One of the following](#one-of-the-following)
+    + [How to fix](#how-to-fix)
+- [How to Contribute?](#how-to-contribute)
+- [CHANGELOG](#changelog)
+- [Noticed any bugs or have any suggestions?](#noticed-any-bugs-or-have-any-suggestions)
+- [License](#license)
 
 ## Usage
 
+In this documentation, we will refer to directory containing media content which have to be served as `media content directory`.
+
 Just download the release version respective to your OS and start it like given below.
+
+### Using GUI
+The admin-server will automatically start if no location is specified, If you wanna start it using command line, you can pass the `-g` flag to the binary.
+It is available at [](http://localhost:3001) by default
+
+![admin-server](images/media-server-admin-page.png)
+
+#### Steps
+- Enter the location where you want to start your media-server
+   - **Port:** You can change port if required, by default it is **3000**.
+   - **Enable Logging:** If you want to see verbose messages in log showing the requests made in the media-server, you can turn on this flag.
+   - **Log Headers:** If you also want to see the headers being passed, You can turn this switch on.
+- Click on `Start Media Server`
+- You will see something like this in the logs
+   ```
+   server is up
+   listening at http://xxx.xxx.xx.xxx:3000
+   ```
+- Go to this `URL` in your smart TV and enjoy your media content being streamed from laptop
+- When all is done, you can stop the Media-Server and the Admin-Server, if you don't stop them, they will keep running
+### Using CLI
 
 The path to media content directory can be provided as either an environment variable or using `-l` argument.
    - Add environmental variable `LOCATION` having media content directory as it's value
    - Location can also be specified as command line argument while starting the application , if used, it will override the Location
      value provided in the `LOCATION` environment variable
 
-### Linux
+#### Linux
    ```
    LOCATION="path/to/media/folder" ./media-server-linux
    ```
@@ -44,7 +86,7 @@ The path to media content directory can be provided as either an environment var
    ```
    ./media-server-linux -l "path/to/media/folder"
    ```
-### Windows
+#### Windows
    ```
    set LOCATION=path\to\media\folder
    .\media-server-win.exe
@@ -54,7 +96,7 @@ The path to media content directory can be provided as either an environment var
    .\media-server-win.exe -l "path\to\media\folder"
    ```
 
-### MacOS
+#### MacOS
    ```
    Figure out yourselves, I don't own Mac
    ```
@@ -63,6 +105,10 @@ The path to media content directory can be provided as either an environment var
    Figure out yourselves, I don't own Mac
    ```
    PS: binaries are their for macOS too
+
+
+## Screenshots
+You can see the working of the app [here.](https://github.com/XploreX/media-server/blob/master/images/screenshots.md)
 
 ## How to use from source code
 
@@ -95,8 +141,6 @@ The path to media content directory can be provided as either an environment var
 where `xxx.xxx.xx.xxx` is IP address of the device running the application and thus serving the content .
 Now to access the media content , just open this link(`http://xxx.xxx.xx.xxx:3000`) in any device connected to the same network as
 the device running the application.
-
-
 
 ## FAQs
 
@@ -142,9 +186,9 @@ the device running the application.
 
 ## How to Contribute?
 
-- ### Fork the repo
-- ### Make your awesome changes
-- ### Send us a PR with your changes
+- Fork the repo
+- Make your awesome changes
+- Send us a PR with your changes
 
 ## CHANGELOG
 

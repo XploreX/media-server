@@ -1,13 +1,12 @@
 const config = global.__config;
 
 const path = require('path');
+const fs = require('fs');
 
 const express = require('express');
 
 const settings = require(config.root + '/src/client-settings');
 const contentService = require(config.root + '/src/user/services/content');
-const getAdjacentFiles = require(config.root +
-  '/src/utility/files-util/getAdjacentFiles');
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
@@ -24,27 +23,20 @@ router.get('/*', (req, res, next) => {
   ) {
     return next();
   }
-  const adjacentFiles = getAdjacentFiles(
-      absoluteFilePath,
-      (file) => {
-        return contentService.image.supportedImageFormatsReg.test(file);
-      },
-      path.join('/content', path.dirname(req.url)),
-  );
 
-  req.url = path.join('public', req.url);
+  let files = fs.readdirSync(path.dirname(absoluteFilePath))
+      .filter((file) => {
+        return contentService.image.supportedImageFormatsReg.test(file);
+      });
+
+  files = files.map((file) => {
+    return path.join(path.dirname(req.url), file);
+  });
+
   console.log(req.url);
-  const fileName = '/' + req.url;
-  const imageName = path.basename(fileName);
-  const imageSource = fileName;
-  //   let imageType = '';
   res.render('displayImage.mustache', {
-    imageName: imageName,
-    imageSource: imageSource,
-    next: adjacentFiles['next'],
-    nextImageSource: adjacentFiles['next'].replace('content', 'public'),
-    previous: adjacentFiles['previous'],
-    previousImageSource: adjacentFiles['previous'].replace('content', 'public'),
+    files: files,
+    currentFileIndex: files.indexOf(req.url),
   });
 });
 

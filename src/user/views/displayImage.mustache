@@ -18,8 +18,8 @@
     <div class="col align-items-center">
         <div class="row">
             <div class="col text-left align-self-center">
-                <a id="previous" type="button" href="{{previous}}">
-                    <img src="{{previousImageSource}}" class="img-thumbnail">
+                <a id="previous" type="button" href="previous">
+                    <img src="previousImageSource" class="img-thumbnail">
                 </a>
             </div>
             <div class="col-10 text-center align-self-center">
@@ -27,7 +27,7 @@
                     <div class="row">
                         <div class="col">
                             <kbd class="d-flex justify-content-center">
-                                <h3 class="align-self-center"> {{imageName}} </h3>
+                                <h3 class="align-self-center"> imageName </h3>
                                 <a id="home_page" type="button" class="m-3 btn btn-success" href=".">Go Back to
                                     Directory</a>
                             </kbd>
@@ -35,38 +35,83 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <img id="current" src="{{imageSource}}" class='img-fluid'>
+                            <img id="current" src="imageSource" class='img-fluid'>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col text-right align-self-center">
-                <a id="next" type="button" href="{{next}}">
-                    <img src="{{nextImageSource}}" class="img-thumbnail rounded">
+                <a id="next" type="button" href="next">
+                    <img src="nextImageSource" class="img-thumbnail">
                 </a>
             </div>
         </div>
     </div>
-
     <script>
-        document.addEventListener('keydown', (event) => {
-            console.log(event);
-            if (event.isComposing || event.keyCode == 229) {
-                return;
+        let files = [];
+        {{#files}}
+        files.push("{{{.}}}");
+        {{/files}}
+
+        let currentFileIndex = {{currentFileIndex}};
+         //console.log(files);
+    </script>
+    <script>
+            let currentImage = document.querySelector('#current');
+            let previousImage = document.querySelector('#previous img');
+            let nextImage = document.querySelector('#next img');
+    </script>
+    <script>
+            function setCurrentImage(imageIndex) {
+                let imageSource = '/public' +  files[imageIndex];
+                currentImage.setAttribute('src', imageSource);
             }
-            if (event.key === 'ArrowLeft') {
-                document.querySelector('#previous').click();
-                //let currentImage = document.querySelector('#current');
-                //let previousImage = document.getElementById('previous').img;
-                //let nextImage = document.querySelector('#next img');
-                //let temp = currentImage.getAttribute('src');
-                //currentImage.setAttribute('src',nextImage.getAttribute('src'));
-                //nextImage.setAttribute('src',temp);
+
+            function setPreviousImage(imageIndex) {
+                console.log(previousImage);
+                if (imageIndex < 0) {
+                    previousImage.style.visibility = 'hidden';
+                    return;
+                }
+                previousImage.style.visibility = 'visible';
+                let imageSource = '/public' + files[imageIndex];
+                previousImage.setAttribute('src', imageSource);
+                console.log(previousImage);
             }
-            else if(event.key === 'ArrowRight') {
-                document.getElementById('next').click();
+
+            function setNextImage(imageIndex) {
+                if (imageIndex > files.length - 1) {
+                    nextImage.style.visibility = 'hidden';
+                    return;
+                }
+                nextImage.style.visibility = 'visible';
+                let imageSource = '/public' + files[imageIndex];
+                //console.log(imageSource);
+                nextImage.setAttribute('src', imageSource);
             }
-        })
+            
+            function setImages(currentIndex) {
+                setCurrentImage(currentIndex);
+                setPreviousImage(currentIndex - 1);
+                setNextImage(currentIndex + 1);
+            }
+    </script>
+    <script>
+            setImages(currentFileIndex);
+            document.addEventListener('keydown', (event) => {
+                console.log(event);
+                if (event.isComposing || event.keyCode == 229) {
+                    return;
+                }
+                if (event.key === 'ArrowLeft') {
+                    currentFileIndex = Math.max(0,currentFileIndex-1);
+                    setImages(currentFileIndex);
+                }
+                else if (event.key === 'ArrowRight') {
+                    currentFileIndex = Math.min(files.length-1,currentFileIndex+1);
+                    setImages(currentFileIndex);
+                }
+            })
     </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"

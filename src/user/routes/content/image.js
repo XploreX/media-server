@@ -24,20 +24,27 @@ router.get('/*', (req, res, next) => {
   ) {
     return next();
   }
+  const adjacentFiles = getAdjacentFiles(
+      absoluteFilePath,
+      (file) => {
+        return contentService.image.supportedImageFormatsReg.test(file);
+      },
+      path.join('/content', path.dirname(req.url)),
+  );
+
   req.url = path.join('public', req.url);
   console.log(req.url);
   const fileName = '/' + req.url;
   const imageName = path.basename(fileName);
   const imageSource = fileName;
   //   let imageType = '';
-  const adjacentFiles = getAdjacentFiles(absoluteFilePath, (file) => {
-    return contentService.image.supportedImageFormatsReg.test(file);
-  });
   res.render('displayImage.mustache', {
     imageName: imageName,
     imageSource: imageSource,
-    next: adjacentFiles.next,
-    previous: adjacentFiles.previous,
+    next: adjacentFiles['next'],
+    nextImageSource: adjacentFiles['next'].replace('content', 'public'),
+    previous: adjacentFiles['previous'],
+    previousImageSource: adjacentFiles['previous'].replace('content', 'public'),
   });
 });
 

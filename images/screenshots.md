@@ -6,17 +6,17 @@
 
 ## Admin Page
 
-![](images/media-server-admin-page.png)
+![](media-server-admin-page.png)
 
 ## Index Page
 
-![](images/media-server-index-page.png)
+![](media-server-index-page.png)
 
 ## Video Playing Page
 
-![](images/media-server-video-playing.png)
+![](media-server-video-playing.png)
 
 ## Resume Functionality
 
-![](images/media-server-video-playing-resume.png)
+![](media-server-video-playing-resume.png)
 

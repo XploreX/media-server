@@ -8,7 +8,7 @@ const fs = require('fs');
  */
 function getAdjacentFiles(absoluteFilePath, filterFunc) {
   const dirPath = path.dirname(absoluteFilePath);
-  const files = fs.readdirSync(dirPath).filter((file)=>{
+  const files = fs.readdirSync(dirPath).filter((file) => {
     if (filterFunc) {
       return filterFunc(file);
     }
@@ -20,10 +20,10 @@ function getAdjacentFiles(absoluteFilePath, filterFunc) {
     next: '#',
   };
   if (indexOfGivenFile - 1 >= 0) {
-    adjacentFiles.previous = files[indexOfGivenFile-1];
+    adjacentFiles.previous = files[indexOfGivenFile - 1];
   }
   if (indexOfGivenFile + 1 < files.length) {
-    adjacentFiles.next = files[indexOfGivenFile+1];
+    adjacentFiles.next = files[indexOfGivenFile + 1];
   }
   //   console.log(absoluteFilePath, adjacentFiles, files);
   return adjacentFiles;

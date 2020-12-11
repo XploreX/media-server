@@ -6,6 +6,8 @@ const express = require('express');
 
 const settings = require(config.root + '/src/client-settings');
 const contentService = require(config.root + '/src/user/services/content');
+const getAdjacentFiles = require(config.root +
+  '/src/utility/files-util/getAdjacentFiles');
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
@@ -28,9 +30,14 @@ router.get('/*', (req, res, next) => {
   const imageName = path.basename(fileName);
   const imageSource = fileName;
   //   let imageType = '';
+  const adjacentFiles = getAdjacentFiles(absoluteFilePath, (file) => {
+    return contentService.image.supportedImageFormatsReg.test(file);
+  });
   res.render('displayImage.mustache', {
     imageName: imageName,
     imageSource: imageSource,
+    next: adjacentFiles.next,
+    previous: adjacentFiles.previous,
   });
 });
 

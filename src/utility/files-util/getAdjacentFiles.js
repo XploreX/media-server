@@ -19,12 +19,13 @@ function getAdjacentFiles(absoluteFilePath, filterFunc) {
     previous: '#',
     next: '#',
   };
-  if (indexOfGivenFile - 1 > 0) {
+  if (indexOfGivenFile - 1 >= 0) {
     adjacentFiles.previous = files[indexOfGivenFile-1];
   }
   if (indexOfGivenFile + 1 < files.length) {
     adjacentFiles.next = files[indexOfGivenFile+1];
   }
+  //   console.log(absoluteFilePath, adjacentFiles, files);
   return adjacentFiles;
 }
 

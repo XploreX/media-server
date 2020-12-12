@@ -22,7 +22,6 @@ router.get('/*', (req, res, next) => {
   if (!contentService.video.isSupportedVideo(absoluteFilePath)) {
     return next();
   } else {
-    const originalFileName = path.basename(absoluteFilePath);
     req.url = path.join('public', req.url);
     console.log(req.url);
     const fileName = '/' + req.url;

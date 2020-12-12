@@ -1,11 +1,12 @@
 const config = global.__config;
+const requireUncached = require(config.root + '/src/utility/requireUncached');
 
 const path = require('path');
 const fs = require('fs');
 
 const express = require('express');
 
-const settings = require(config.root + '/src/client-settings');
+const settings = requireUncached(config.root + '/src/client-settings');
 const contentService = require(config.root + '/src/user/services/content');
 const getAdjacentFiles = require(config.root +
   '/src/utility/files-util/getAdjacentFiles');

@@ -1,9 +1,10 @@
 const config = global.__config;
+const requireUncached = require(config.root + '/src/utility/requireUncached');
 
 const customRequireDirectory = require(config.root +
   '/src/utility/customRequireDirectory');
 
-const settings = require(config.root + '/src/client-settings');
+const settings = requireUncached(config.root + '/src/client-settings');
 const {supportedVideoFormatsReg} = require(config.root +
   '/src/user/services/content/video');
 const {supportedImageFormatsReg} = require(config.root +

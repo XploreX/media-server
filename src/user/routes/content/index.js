@@ -29,7 +29,7 @@ router.get(
     }),
 );
 
-router.use(require(config.root + '/src/user/routes/content/video'));
-router.use(require(config.root + '/src/user/routes/content/image'));
+router.use(requireUncached(config.root + '/src/user/routes/content/video'));
+router.use(requireUncached(config.root + '/src/user/routes/content/image'));
 
 module.exports = router;

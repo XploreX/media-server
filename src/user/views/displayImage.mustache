@@ -18,8 +18,8 @@
     <div class="col align-items-center">
         <div class="row">
             <div class="col text-left align-self-center">
-                <a id="previous" type="button" href="previous">
-                    <img src="previousImageSource" class="img-thumbnail">
+                <a id="previous" type="button">
+                    <img src="previousImageSource" class="img-thumbnail" onclick="decreaseCurrentFileIndex()">
                 </a>
             </div>
             <div class="col-10 text-center align-self-center">
@@ -27,7 +27,7 @@
                     <div class="row">
                         <div class="col">
                             <kbd class="d-flex justify-content-center">
-                                <h3 class="align-self-center"> imageName </h3>
+                                <h3 id="imageName" class="align-self-center"> imageName </h3>
                                 <a id="home_page" type="button" class="m-3 btn btn-success" href=".">Go Back to
                                     Directory</a>
                             </kbd>
@@ -41,8 +41,8 @@
                 </div>
             </div>
             <div class="col text-right align-self-center">
-                <a id="next" type="button" href="next">
-                    <img src="nextImageSource" class="img-thumbnail">
+                <a id="next" type="button">
+                    <img src="nextImageSource" class="img-thumbnail" onclick="increaseCurrentFileIndex()">
                 </a>
             </div>
         </div>
@@ -58,13 +58,23 @@
     </script>
     <script>
             let currentImage = document.querySelector('#current');
+            let imageName = document.querySelector('#imageName');
             let previousImage = document.querySelector('#previous img');
             let nextImage = document.querySelector('#next img');
     </script>
     <script>
+            function baseName(str)
+            {
+                var base = new String(str).substring(str.lastIndexOf('/') + 1); 
+                    if(base.lastIndexOf(".") != -1)       
+                        base = base.substring(0, base.lastIndexOf("."));
+                return base;
+            }
             function setCurrentImage(imageIndex) {
                 let imageSource = '/public' +  files[imageIndex];
                 currentImage.setAttribute('src', imageSource);
+                imageName.innerHTML=baseName(files[imageIndex]);
+                document.title=imageName.innerHTML;
             }
 
             function setPreviousImage(imageIndex) {
@@ -97,6 +107,14 @@
             }
     </script>
     <script>
+            function decreaseCurrentFileIndex(){
+                currentFileIndex = Math.max(0,currentFileIndex-1);
+                setImages(currentFileIndex);
+            }
+            function increaseCurrentFileIndex(){
+                currentFileIndex = Math.min(files.length-1,currentFileIndex+1);
+                setImages(currentFileIndex);
+            }
             setImages(currentFileIndex);
             document.addEventListener('keydown', (event) => {
                 console.log(event);
@@ -104,12 +122,10 @@
                     return;
                 }
                 if (event.key === 'ArrowLeft') {
-                    currentFileIndex = Math.max(0,currentFileIndex-1);
-                    setImages(currentFileIndex);
+                    decreaseCurrentFileIndex();
                 }
                 else if (event.key === 'ArrowRight') {
-                    currentFileIndex = Math.min(files.length-1,currentFileIndex+1);
-                    setImages(currentFileIndex);
+                    increaseCurrentFileIndex();
                 }
             })
     </script>

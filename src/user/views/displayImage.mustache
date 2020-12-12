@@ -71,15 +71,10 @@
             }
             function setCurrentImage(imageIndex) {
                 const imageSource = '/public' + files[imageIndex];
-                let pos = imageSource.lastIndexOf('/');
-                let imageName = imageSource.substring(pos + 1);
-                pos = imageName.lastIndexOf('.');
-                imageName = imageName.substring(0, pos);
+                const imageName = baseName(imageSource);
                 titleTag.innerText = imageName;
                 imageNameTag.innerText = imageName;
                 currentImage.setAttribute('src', imageSource);
-                imageName.innerHTML=baseName(files[imageIndex]);
-                document.title=imageName.innerHTML;
             }
 
             function setPreviousImage(imageIndex) {

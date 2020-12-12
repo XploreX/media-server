@@ -7,12 +7,13 @@ const express = require('express');
 
 const settings = require(config.root + '/src/client-settings');
 const contentService = require(config.root + '/src/user/services/content');
+const getAdjacentFiles = require(config.root +
+  '/src/utility/files-util/getAdjacentFiles');
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
 const contentLocation = settings.location;
 const supportedVideoFormatsReg = contentService.video.supportedVideoFormatsReg;
-
 // route to handle video files
 router.get('/*', (req, res, next) => {
   req.url = decodeURI(req.url);
@@ -37,24 +38,17 @@ router.get('/*', (req, res, next) => {
     ) {
       subtitleSource = fileName.replace(supportedVideoFormatsReg, '.vtt');
     }
-    const dir = path.dirname(absoluteFilePath);
-    const files = fs.readdirSync(dir).filter((file) => {
+    const adjacentFiles = getAdjacentFiles(absoluteFilePath, (file) => {
       return supportedVideoFormatsReg.test(file);
     });
-    const pos = files.indexOf(originalFileName);
-    let next = '#';
-    let prev = '#';
-    if (pos + 1 < files.length) {
-      next = files[pos + 1];
-    }
-    if (pos - 1 >= 0) prev = files[pos - 1];
+
     res.render('displayVideo.mustache', {
       videoName: videoName,
       videoSource: videoSource,
       videoType: videoType,
       subtitleSource: subtitleSource,
-      next: next,
-      prev: prev,
+      next: adjacentFiles['next'] || '#',
+      prev: adjacentFiles['previous'] || '#',
     });
   }
 });

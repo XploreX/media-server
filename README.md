@@ -54,7 +54,7 @@ Just download the release version respective to your OS and start it like given 
 
 ### Using GUI
 The admin-server will automatically start if no location is specified, If you wanna start it using command line, you can pass the `-g` flag to the binary.
-It is available at [](http://localhost:3001) by default
+It is available at [http://localhost:3001](http://localhost:3001) by default
 
 ![admin-server](images/media-server-admin-page.png)
 

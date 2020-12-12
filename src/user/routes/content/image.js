@@ -33,7 +33,7 @@ router.get('/*', (req, res, next) => {
   });
 
   console.log(req.url);
-  res.render('displayImage.mustache', {
+  res.render('displayImageTemp.mustache', {
     files: files,
     currentFileIndex: files.indexOf(req.url),
   });

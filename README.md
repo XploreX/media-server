@@ -106,6 +106,20 @@ The path to media content directory can be provided as either an environment var
    ```
    PS: binaries are their for macOS too
 
+#### Summary of command line options that can be provided
+
+```
+A localhost Media Server
+
+Options:
+  -v, --verbose   Run with verbose logging                               [count]
+  -l, --location  the path to media content directory                   [string]
+  -p, --port      the port to run server on                             [number]
+  -g, --gui       open gui mode for configuring settings               [boolean]
+      --image     enable display of images            [boolean] [default: false]
+      --video     enable display of videos             [boolean] [default: true]
+  -h, --help      Show help                                            [boolean]
+```
 
 ## Screenshots
 You can see the working of the app [here.](https://github.com/XploreX/media-server/blob/master/images/screenshots.md)

@@ -13,35 +13,33 @@
     </title>
 </head>
 
-<body class="container-fluid pt-3 bg-dark text-light">
+<body class="pt-3 bg-dark text-light">
 
-    <div class="col align-items-center">
+    <div class='container-fluid'>
         <div class="row">
-            <div class="col text-left align-self-center">
-                <a id="previous" type="button" href="previous">
+            <div class="col">
+                <kbd class="d-flex justify-content-center">
+                    <h3 id='image-name' class="align-self-center"> imageName </h3>
+                    <a id="home_page" type="button" class="m-3 btn btn-success" href=".">Go Back to
+                        Directory</a>
+                </kbd>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2 align-self-center">
+                <a id="previous" type="button" onclick="moveLeft()">
                     <img src="previousImageSource" class="img-thumbnail" style="filter:opacity(75%);">
                 </a>
             </div>
-            <div class="col-10 text-center align-self-center">
-                <div class="container">
-                    <div class="row">
-                        <div class="col">
-                            <kbd class="d-flex justify-content-center">
-                                <h3 id='image-name' class="align-self-center"> imageName </h3>
-                                <a id="home_page" type="button" class="m-3 btn btn-success" href=".">Go Back to
-                                    Directory</a>
-                            </kbd>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <img id="current" src="imageSource" class='img-fluid'>
-                        </div>
-                    </div>
-                </div>
+
+
+            <div class="col-8">
+                <img id="current" src="imageSource" class='img-fluid'>
             </div>
-            <div class="col text-right align-self-center">
-                <a id="next" type="button" href="next">
+
+
+            <div class="col-2 align-self-center">
+                <a id="next" type="button" onclick="moveRight()">
                     <img src="nextImageSource" class="img-thumbnail" style="filter:opacity(75%);">
                 </a>
             </div>
@@ -53,7 +51,7 @@
         files.push("{{{.}}}");
         {{/files}}
 
-        let currentFileIndex = {{currentFileIndex}};
+                let currentFileIndex = {{currentFileIndex}};
          //console.log(files);
     </script>
     <script>
@@ -65,11 +63,11 @@
     </script>
     <script>
             function setCurrentImage(imageIndex) {
-                const imageSource = '/public' +  files[imageIndex];
+                const imageSource = '/public' + files[imageIndex];
                 let pos = imageSource.lastIndexOf('/');
-                let imageName = imageSource.substring(pos+1); 
+                let imageName = imageSource.substring(pos + 1);
                 pos = imageName.lastIndexOf('.');
-                imageName = imageName.substring(0,pos);
+                imageName = imageName.substring(0, pos);
                 titleTag.innerText = imageName;
                 imageNameTag.innerText = imageName;
                 currentImage.setAttribute('src', imageSource);
@@ -97,12 +95,23 @@
                 //console.log(imageSource);
                 nextImage.setAttribute('src', imageSource);
             }
-            
+
             function setImages(currentIndex) {
                 setCurrentImage(currentIndex);
                 setPreviousImage(currentIndex - 1);
                 setNextImage(currentIndex + 1);
             }
+
+            function moveLeft() {
+                currentFileIndex = Math.max(0, currentFileIndex - 1);
+                setImages(currentFileIndex);
+            }
+
+            function moveRight() {
+                currentFileIndex = Math.min(files.length - 1, currentFileIndex + 1);
+                setImages(currentFileIndex);
+            }
+
     </script>
     <script>
             setImages(currentFileIndex);
@@ -112,12 +121,10 @@
                     return;
                 }
                 if (event.key === 'ArrowLeft') {
-                    currentFileIndex = Math.max(0,currentFileIndex-1);
-                    setImages(currentFileIndex);
+                    moveLeft();
                 }
                 else if (event.key === 'ArrowRight') {
-                    currentFileIndex = Math.min(files.length-1,currentFileIndex+1);
-                    setImages(currentFileIndex);
+                    moveRight();
                 }
             })
     </script>

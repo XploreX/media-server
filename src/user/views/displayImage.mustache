@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col text-left align-self-center">
                 <a id="previous" type="button" href="previous">
-                    <img src="previousImageSource" class="img-thumbnail">
+                    <img src="previousImageSource" class="img-thumbnail" style="filter:opacity(75%);">
                 </a>
             </div>
             <div class="col-10 text-center align-self-center">
@@ -27,7 +27,7 @@
                     <div class="row">
                         <div class="col">
                             <kbd class="d-flex justify-content-center">
-                                <h3 class="align-self-center"> imageName </h3>
+                                <h3 id='image-name' class="align-self-center"> imageName </h3>
                                 <a id="home_page" type="button" class="m-3 btn btn-success" href=".">Go Back to
                                     Directory</a>
                             </kbd>
@@ -42,7 +42,7 @@
             </div>
             <div class="col text-right align-self-center">
                 <a id="next" type="button" href="next">
-                    <img src="nextImageSource" class="img-thumbnail">
+                    <img src="nextImageSource" class="img-thumbnail" style="filter:opacity(75%);">
                 </a>
             </div>
         </div>
@@ -57,13 +57,21 @@
          //console.log(files);
     </script>
     <script>
-            let currentImage = document.querySelector('#current');
-            let previousImage = document.querySelector('#previous img');
-            let nextImage = document.querySelector('#next img');
+            const currentImage = document.querySelector('#current');
+            const previousImage = document.querySelector('#previous img');
+            const nextImage = document.querySelector('#next img');
+            const titleTag = document.querySelector('title');
+            const imageNameTag = document.querySelector('#image-name');
     </script>
     <script>
             function setCurrentImage(imageIndex) {
-                let imageSource = '/public' +  files[imageIndex];
+                const imageSource = '/public' +  files[imageIndex];
+                let pos = imageSource.lastIndexOf('/');
+                let imageName = imageSource.substring(pos+1); 
+                pos = imageName.lastIndexOf('.');
+                imageName = imageName.substring(0,pos);
+                titleTag.innerText = imageName;
+                imageNameTag.innerText = imageName;
                 currentImage.setAttribute('src', imageSource);
             }
 

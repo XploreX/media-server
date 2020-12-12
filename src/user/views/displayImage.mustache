@@ -62,6 +62,13 @@
             const imageNameTag = document.querySelector('#image-name');
     </script>
     <script>
+            function baseName(str)
+            {
+                var base = new String(str).substring(str.lastIndexOf('/') + 1); 
+                    if(base.lastIndexOf(".") != -1)       
+                        base = base.substring(0, base.lastIndexOf("."));
+                return base;
+            }
             function setCurrentImage(imageIndex) {
                 const imageSource = '/public' + files[imageIndex];
                 let pos = imageSource.lastIndexOf('/');
@@ -71,6 +78,8 @@
                 titleTag.innerText = imageName;
                 imageNameTag.innerText = imageName;
                 currentImage.setAttribute('src', imageSource);
+                imageName.innerHTML=baseName(files[imageIndex]);
+                document.title=imageName.innerHTML;
             }
 
             function setPreviousImage(imageIndex) {
@@ -114,6 +123,14 @@
 
     </script>
     <script>
+            function decreaseCurrentFileIndex(){
+                currentFileIndex = Math.max(0,currentFileIndex-1);
+                setImages(currentFileIndex);
+            }
+            function increaseCurrentFileIndex(){
+                currentFileIndex = Math.min(files.length-1,currentFileIndex+1);
+                setImages(currentFileIndex);
+            }
             setImages(currentFileIndex);
             document.addEventListener('keydown', (event) => {
                 console.log(event);

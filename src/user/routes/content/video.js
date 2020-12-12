@@ -1,42 +1,25 @@
 const config = global.__config;
-const requireUncached = require(config.root + '/src/utility/requireUncached');
 
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
 
 const express = require('express');
-const serveIndex = require('serve-index');
 
-const services = require(config.root + '/src/user/services');
-const settings = requireUncached(config.root + '/src/client-settings');
-
+const settings = require(config.root + '/src/client-settings');
+const contentService = require(config.root + '/src/user/services/content');
 // eslint-disable-next-line new-cap
 const router = express.Router();
 
-const content = settings.location;
-const supportedVideoFormatsReg = services.video.supportedVideoFormatsReg;
-
-router.get(
-    '/*',
-    serveIndex(content, {
-      icons: true,
-      filter: function(file, pos, list, dir) {
-        return (
-          (fs.existsSync(path.join(dir, file)) &&
-          fs.lstatSync(path.join(dir, file)).isDirectory()) ||
-        supportedVideoFormatsReg.test(file)
-        );
-      },
-    }),
-);
+const contentLocation = settings.location;
+const supportedVideoFormatsReg = contentService.video.supportedVideoFormatsReg;
 
 // route to handle video files
 router.get('/*', (req, res, next) => {
   req.url = decodeURI(req.url);
-  const absoluteFilePath = path.join(content, unescape(req.url));
+  const absoluteFilePath = path.join(contentLocation, unescape(req.url));
   // console.log(absoluteFilePath);
-  if (!services.video.isSupportedVideo(absoluteFilePath)) {
-    next();
+  if (!contentService.video.isSupportedVideo(absoluteFilePath)) {
+    return next();
   } else {
     const originalFileName = path.basename(absoluteFilePath);
     req.url = path.join('public', req.url);

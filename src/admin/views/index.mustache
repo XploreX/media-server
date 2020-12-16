@@ -81,30 +81,28 @@
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
             <div class="d-sm-flex align-items-right justify-content-end">
-            <button id="adminserverstate"
-              class="d-none d-sm-inline-block btn btn-warning shadow-sm text-dark mr-4" onclick="stopAdminServer(event)">
-              Stop Admin Server</button>
-            <button id="serverstate"
-              class="d-none d-sm-inline-block btn btn-dark shadow-sm text-white">
-              Start Media Server</button>
+              <button id="adminserverstate" class="d-none d-sm-inline-block btn btn-warning shadow-sm text-dark mr-4"
+                onclick="stopAdminServer(event)">
+                Stop Admin Server</button>
+              <button id="serverstate" class="d-none d-sm-inline-block btn btn-dark shadow-sm text-white">
+                Start Media Server</button>
             </div>
           </div>
 
           <!-- Content Row -->
 
-          <div class="row">
-
-            <!-- Area Chart -->
-            <div class="col">
-              <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Settings</h6>
-                  <button class="btn btn-primary" id="submitbtn" onclick="submitForm()">Save</button>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                  <form id="settingsform" action="/api/update-settings" method="post">
+          <form id="settingsform" action="/api/update-settings" method="post">
+            <div class="row">
+              <!-- Area Chart -->
+              <div class="col">
+                <div class="card shadow mb-4">
+                  <!-- Card Header - Dropdown -->
+                  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Settings</h6>
+                    <button class="btn btn-primary" id="submitbtn" onclick="submitForm()">Save</button>
+                  </div>
+                  <!-- Card Body -->
+                  <div class="card-body">
                     <div class="form-group">
                       <label for="location">Location:</label>
                       <input name="location" type="text" class="form-control" id="location" placeholder="Enter Location"
@@ -132,29 +130,28 @@
                       <label class="custom-control-label" for="logHeaders">
                         Log Headers</label>
                     </div>
-                    <input name="verbose" type="number" class="custom-control-input" id="verbose" value="{{verbose}}" style="hidden">
+                    <input name="verbose" type="number" class="custom-control-input" id="verbose" value="{{verbose}}"
+                      style="hidden">
                     {{! <button type="submit" class="btn btn-primary">Submit</button> }}
-                  </form>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <!-- Pie Chart -->
-            {{! <div class="col-xl-4 col-lg-5">
-              <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">Media types</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                  <div class="chart-pie pt-4 pb-2">
-                    <canvas id="myPieChart"></canvas>
+              <!-- Pie Chart -->
+              <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-4">
+                  <!-- Card Header - Dropdown -->
+                  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Select Media Types </h6>
                   </div>
-                  <div class="mt-4 text-center small">
-                    <span class="mr-2">
-                      <i class="fas fa-circle text-primary"></i> mp4
-                    </span>
+                  <!-- Card Body -->
+                  <!-- <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                      <canvas id="myPieChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center small">
+                      <span class="mr-2">
+                        <i class="fas fa-circle text-primary"></i> mp4
+                      </span>
                     <span class="mr-2">
                       <i class="fas fa-circle text-success"></i> avi
                     </span>
@@ -162,10 +159,32 @@
                       <i class="fas fa-circle text-info"></i> mkv
                     </span>
                   </div>
+                </div> -->
+                  <div class="pt-4 pb-2">
+                    <div class="form-group custom-control custom-switch d-inline">
+                      <input name='images' type="checkbox" value=1 class="custom-control-input" id="images">
+                      <label class="custom-control-label" for="images">
+                        Images
+                      </label>
+                    </div>
+                    <div class="d-inline">
+                      <img src="/static/images/card-image.svg" width="24" height="24">
+                    </div>
+                    <br>
+                    <div class="form-group custom-control custom-switch d-inline">
+                      <input name='videos' type="checkbox" value=1 class="custom-control-input" id="videos">
+                      <label class="custom-control-label" for="videos">
+                        Videos
+                      </label>
+                    </div>
+                    <div class="d-inline">
+                      <img src="/static/images/camera-video-fill.svg" width="24" height="24">
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div> }}
-          </div>
+            </div>
+          </form>
 
           <!-- Content Row -->
           <div class="row">
@@ -216,24 +235,27 @@
     <i class="fas fa-angle-up"></i>
   </a>
 
-  {{! <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script> }}
+  {{!
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script> }}
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
   <script>
     function stopAdminServer(event) {
       console.log(event.toElement);
-      event.toElement.innerHTML="Stopping..."
+      event.toElement.innerHTML = "Stopping..."
       $.ajax({
-            type: "POST",
-            url: '/exit',
-            success: (data) => {
-              if(data=="OK"){
-                event.toElement.innerHTML="Stopped!"
-                setInterval(()=>{
-                window.close();
-                },1000);
-              }
-            }
+        type: "POST",
+        url: '/exit',
+        success: (data) => {
+          if (data == "OK") {
+            event.toElement.innerHTML = "Stopped!"
+            setInterval(() => {
+              window.close();
+            }, 1000);
+          }
+        }
       })
     }
     async function submitForm() {
@@ -255,19 +277,19 @@
             required: "port is required",
           },
         },
-        submitHandler: await function (form){
-          var data=$(form).serialize()// serializes the form's elements.
-          data['verbose']=1;
+        submitHandler: await function (form) {
+          var data = $(form).serialize()// serializes the form's elements.
+          data['verbose'] = 1;
           $.ajax({
             type: "POST",
             url: '/api/update-settings',
-            data: data, 
+            data: data,
             success: (data) => {
-              if(data=="OK"){
-                $("#submitbtn")[0].innerHTML="Saved!";
-                setTimeout(()=>{
-                  $("#submitbtn")[0].innerHTML="Save"
-                },2000);
+              if (data == "OK") {
+                $("#submitbtn")[0].innerHTML = "Saved!";
+                setTimeout(() => {
+                  $("#submitbtn")[0].innerHTML = "Save"
+                }, 2000);
               }
             }
           })
@@ -277,28 +299,34 @@
       return;
     }
     $(document).ready(() => {
+      console.log("images and videos here",{{images}},{{videos}});
       const startText = 'Start Media Server';
       const stopText = 'Stop Server'
       let btn = $("#serverstate");
-      $('#settingsform :checkbox').change(function() {
-          // this will contain a reference to the checkbox   
-          if (this.checked) {
-              $('#verbose').val(parseInt($('#verbose').val())+1);
-              // the checkbox is now checked 
-          } else {
-              $('#verbose').val(parseInt($('#verbose').val())-1);
-              // the checkbox is now no longer checked
-          }
+      $('#settingsform :checkbox').change(function () {
+        // this will contain a reference to the checkbox   
+        if (this.checked) {
+          $('#verbose').val(parseInt($('#verbose').val()) + 1);
+          // the checkbox is now checked 
+        } else {
+          $('#verbose').val(parseInt($('#verbose').val()) - 1);
+          // the checkbox is now no longer checked
+        }
       });
 
-      if($('#verbose').val()=="1"){
-        $('#logging').prop('checked',true);
+      if ($('#verbose').val() == "1") {
+        $('#logging').prop('checked', true);
       }
-      if($('#verbose').val()=="2"){
-        $('#logging').prop('checked',true);
-        $('#logHeaders').prop('checked',true);
+      if ($('#verbose').val() == "2") {
+        $('#logging').prop('checked', true);
+        $('#logHeaders').prop('checked', true);
       }
-
+      {{#images}} 
+        $('#images').prop('checked',true);
+      {{/images}}
+      {{#videos}}
+        $('#videos').prop('checked',true);
+      {{/videos}}
       $.ajax({
         url: '/api/user-server/status',
         success: (res) => {
@@ -313,16 +341,16 @@
         if (btn[0].innerHTML.trim() == startText) {
           btn[0].innerHTML = "Starting...";
           submitForm();
-          setTimeout(()=>{
+          setTimeout(() => {
             $.ajax({
-            url: '/api/user-server/start', success: (res) => {
-              if (res === "OK") {
-                btn[0].innerHTML = stopText
-                btn.toggleClass("btn-dark btn-danger");
+              url: '/api/user-server/start', success: (res) => {
+                if (res === "OK") {
+                  btn[0].innerHTML = stopText
+                  btn.toggleClass("btn-dark btn-danger");
+                }
               }
-            }
-          });
-          },1000);
+            });
+          }, 1000);
         }
         else {
           btn[0].innerHTML = "Stopping...";
@@ -340,14 +368,14 @@
         $.ajax({
           url: '/api/clearlogs', success: (res) => {
             if (res === "OK") {
-              $("#clearlogs")[0].innerHTML="Cleared!";
+              $("#clearlogs")[0].innerHTML = "Cleared!";
             }
-            else if(res==="FAIL"){
-              $("#clearlogs")[0].innerHTML="Failed! Try stopping the server";
+            else if (res === "FAIL") {
+              $("#clearlogs")[0].innerHTML = "Failed! Try stopping the server";
             }
-            setTimeout(()=>{
-              $("#clearlogs")[0].innerHTML="Clear Logs"
-            },2000);
+            setTimeout(() => {
+              $("#clearlogs")[0].innerHTML = "Clear Logs"
+            }, 2000);
           }
         });
       });
@@ -377,7 +405,8 @@
     integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
     crossorigin="anonymous"></script>
   <!-- Core plugin JavaScript-->
-  {{! <script src="vendor/jquery-easing/jquery.easing.min.js"></script> }}
+  {{!
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script> }}
 
   <!-- Custom scripts for all pages-->
   <script src="/static/js/sb-admin-2.min.js"></script>

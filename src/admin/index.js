@@ -23,7 +23,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(
     session({
       secret: [adminSessionConfig.sessionSecret],
-      resave: false,
+      resave: true,
       saveUninitialized: true,
       cookie: {
         maxAge: 30 * 24 * 60 * 60 * 1000, // milliseconds in 30 days
@@ -35,6 +35,7 @@ app.use(
 app.use('/api', require(config.root + '/src/admin/routes/api'));
 
 app.get('/', (req, res) => {
+  // console.log('here', req.session);
   sync(settings, req.session);
   res.render('index.mustache', {
     port: req.session.port,
@@ -42,6 +43,8 @@ app.get('/', (req, res) => {
     logging: req.session.logging,
     verbose: req.session.verbose,
     logHeaders: req.session.logHeaders,
+    images: req.session.images || 0,
+    videos: req.session.videos || 0,
   });
 });
 

@@ -6,16 +6,26 @@
 
 **Implemented enhancements:**
 
+- Improve display for images [\#20](https://github.com/XploreX/media-server/issues/20)
 - Support for multiple audio tracks in video [\#11](https://github.com/XploreX/media-server/issues/11)
+- Why restrict to just videos ? [\#7](https://github.com/XploreX/media-server/issues/7)
 - Adding good user interface to specify media location [\#6](https://github.com/XploreX/media-server/issues/6)
 - previous, next buttons in video page [\#2](https://github.com/XploreX/media-server/issues/2)
+- Improve image display [\#19](https://github.com/XploreX/media-server/pull/19) ([parth-07](https://github.com/parth-07))
+
+**Fixed bugs:**
+
+- content not found [\#18](https://github.com/XploreX/media-server/issues/18)
 
 **Closed issues:**
 
+- session variable not persisting in admin portal [\#22](https://github.com/XploreX/media-server/issues/22)
+- Alignment issues in display video pages in mobile devices [\#21](https://github.com/XploreX/media-server/issues/21)
 - Forward and Rewind feature in TV remotes [\#12](https://github.com/XploreX/media-server/issues/12)
 
 **Merged pull requests:**
 
+- Image view branch [\#17](https://github.com/XploreX/media-server/pull/17) ([parth-07](https://github.com/parth-07))
 - Admin panel [\#15](https://github.com/XploreX/media-server/pull/15) ([manorit2001](https://github.com/manorit2001))
 - Next prev [\#14](https://github.com/XploreX/media-server/pull/14) ([manorit2001](https://github.com/manorit2001))
 - Admin panel [\#13](https://github.com/XploreX/media-server/pull/13) ([manorit2001](https://github.com/manorit2001))

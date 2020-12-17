@@ -90,88 +90,97 @@
           </div>
 
           <!-- Content Row -->
-
-          <form id="settingsform" action="/api/update-settings" method="post">
+          <form id="settingsform" width="auto" class="" action="/api/update-settings" method="post">
             <div class="row">
               <!-- Area Chart -->
-              <div class="col-xl-8 xol-lg-7">
+              <div class="col">
                 <div class="card shadow mb-4">
-                  <!-- Card Header - Dropdown -->
                   <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Settings</h6>
                     <button class="btn btn-primary" id="submitbtn" onclick="submitForm()">Save</button>
                   </div>
-                  <!-- Card Body -->
                   <div class="card-body">
-                    <div class="form-group">
-                      <label for="location">Location:</label>
-                      <input name="location" type="text" class="form-control" id="location" placeholder="Enter Location"
-                        value="{{location}}" required>
-                      <small class="form-text text-muted">Due to browser security sandbox restrictions we
-                        can't get the
-                        absolute path to the folder, Please copy paste the folder path above.
-                      </small>
+                    <div class="container-fluid" id="tempCheck">
+                      <div class="row">
+                        <div class="col-6 col-xl-8">
+                          <!-- Card Header - Dropdown -->
+                          <!-- Card Body -->
+                          <div class="form-group">
+                            <label for="location">Location:</label>
+                            <input name="location" type="text" class="form-control" id="location"
+                              placeholder="Enter Location" value="{{location}}" required>
+                            <small class="form-text text-muted">Due to browser security sandbox restrictions we
+                              can't get the
+                              absolute path to the folder, Please copy paste the folder path above.
+                            </small>
+                          </div>  
+                          <div class="form-group">
+                            <label for="port">Port:</label>
+                            <input name="port" type="number" class="form-control" id="port" placeholder="Enter Port"
+                              value="{{port}}" required>
+                          </div>
+                        </div>
+                        <div class="col-6 col-xl-4">
+                          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary">Select Media Types </h6>
+                          </div>
+                          <div class="container-fluid">
+                            <div class="row">
+                              <div class="col-11 col-sm-11 col-md-5 col-lg-3">
+                                <div class="form-group custom-control custom-switch">
+                                  <input name='images' type="checkbox" value=1 class="custom-control-input" id="images">
+                                  <label class="custom-control-label" for="images">
+                                    Images
+                                  </label>
+                                </div>
+                              </div>
+                              <div class="col">
+                                  <svg width="24" height="24" class="bi bi-card-image" viewBox="0 0 24 24">
+                                    <image xlink:href="/static/images/card-image.svg" width="24" height="24">
+                                  </svg>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-11 col-sm-11 col-md-5 col-lg-3">
+                                <div class="form-group custom-control custom-switch ">
+                                  <input name='videos' type="checkbox" value=1 class="custom-control-input" id="videos">
+                                  <label class="custom-control-label" for="videos">
+                                    Videos
+                                  </label>
+                                </div>
+                              </div>
+                              <div class="col">
+                                <svg width="24" height="24" viewBox="0 0 24 24">
+                                  <image xlink:href="/static/images/camera-video-fill.svg" width="24" height="24">
+                                </svg>
+                                
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    
+                    <div class="row">
+                      <div class="col">
+                        <div class="form-group custom-control custom-switch">
+                          <input type="checkbox" class="custom-control-input" id="logging">
+                          <label class="custom-control-label" for="logging">
+                            Enable Logging</label>
+                        </div>
+                        
+                        <div class="form-group custom-control custom-switch">
+                          <input type="checkbox" class="custom-control-input" id="logHeaders">
+                          <label class="custom-control-label" for="logHeaders">
+                            Log Headers</label>
+                        </div>
+                        <input name="verbose" type="number" class="custom-control-input" id="verbose" value="{{verbose}}"
+                          style="hidden">
+                        {{! <button type="submit" class="btn btn-primary">Submit</button> }}
+                      </div>
                     </div>
-                    <br>
-                    <div class="form-group">
-                      <label for="port">Port:</label>
-                      <input name="port" type="number" class="form-control" id="port" placeholder="Enter Port"
-                        value="{{port}}" required>
-                    </div>
-                    <br>
-                    <div class="form-group custom-control custom-switch">
-                      <input type="checkbox" class="custom-control-input" id="logging">
-                      <label class="custom-control-label" for="logging">
-                        Enable Logging</label>
-                    </div>
-                    <br>
-                    <div class="form-group custom-control custom-switch">
-                      <input type="checkbox" class="custom-control-input" id="logHeaders">
-                      <label class="custom-control-label" for="logHeaders">
-                        Log Headers</label>
-                    </div>
-                    <input name="verbose" type="number" class="custom-control-input" id="verbose" value="{{verbose}}"
-                      style="hidden">
-                    {{! <button type="submit" class="btn btn-primary">Submit</button> }}
                   </div>
                 </div>
               </div>
-              <!-- Pie Chart -->
-              <div class="col-xl-4 col-lg-5">
-                <div class="card shadow mb-4">
-                  <!-- Card Header - Dropdown -->
-                  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Select Media Types </h6>
-                  </div>
-                  <div class="card-body pt-4 pb-2">
-                  <div class="row">
-                    <div class="col-xl-3 col-lg-4">
-                    <div class="form-group d-inline custom-control custom-switch d-inline">
-                      <input name='images' type="checkbox" value=1 class="custom-control-input" id="images">
-                      <label class="custom-control-label" for="images">
-                        Images
-                      </label>
-                    </div>
-                    <br>
-                    <div class="form-group d-inline custom-control custom-switch d-inline">
-                      <input name='videos' type="checkbox" value=1 class="custom-control-input" id="videos">
-                      <label class="custom-control-label" for="videos">
-                        Videos
-                      </label>
-                    </div>
-                    <br>
-                    </div>
-                    <div class="col-xl-1 col-lg-1">
-                    <div class="d-inline">
-                      <img src="/static/images/card-image.svg" width="24" height="24">
-                    </div>
-                    <br>
-                    <div class="d-inline">
-                      <img src="/static/images/camera-video-fill.svg" width="24" height="24">
-                    </div>
-                  </div>
-                  </div>
-                </div>
               </div>
             </div>
           </form>
@@ -200,7 +209,6 @@
 
         </div>
         <!-- /.container-fluid -->
-
       </div>
       <!-- End of Main Content -->
 
@@ -289,104 +297,106 @@
       return;
     }
     $(document).ready(() => {
-      console.log("images and videos here",{{images}},{{videos}});
-      const startText = 'Start Media Server';
-      const stopText = 'Stop Server'
-      let btn = $("#serverstate");
-      $('#settingsform :checkbox').change(function () {
-        // this will contain a reference to the checkbox   
-        if (this.checked) {
-          $('#verbose').val(parseInt($('#verbose').val()) + 1);
-          // the checkbox is now checked 
-        } else {
-          $('#verbose').val(parseInt($('#verbose').val()) - 1);
-          // the checkbox is now no longer checked
-        }
-      });
+      let checkContainer = document.querySelector('#tempCheck');
+      console.log(checkContainer.getBoundingClientRect());
+      console.log("images and videos here", {{images}}, {{videos}});
+    const startText = 'Start Media Server';
+    const stopText = 'Stop Server'
+    let btn = $("#serverstate");
+    $('#settingsform :checkbox').change(function () {
+      // this will contain a reference to the checkbox   
+      if (this.checked) {
+        $('#verbose').val(parseInt($('#verbose').val()) + 1);
+        // the checkbox is now checked 
+      } else {
+        $('#verbose').val(parseInt($('#verbose').val()) - 1);
+        // the checkbox is now no longer checked
+      }
+    });
 
-      if ($('#verbose').val() == "1") {
-        $('#logging').prop('checked', true);
-      }
-      if ($('#verbose').val() == "2") {
-        $('#logging').prop('checked', true);
-        $('#logHeaders').prop('checked', true);
-      }
-      {{#images}} 
-        $('#images').prop('checked',true);
-      {{/images}}
-      {{#videos}}
-        $('#videos').prop('checked',true);
-      {{/videos}}
-      $.ajax({
-        url: '/api/user-server/status',
-        success: (res) => {
-          if (res == 'OK')
-            btn[0].innerHTML = stopText;
-          else if (res == 'FAIL')
-            btn[0].innerHTML = startText;
-        }
-      })
-      btn.click(() => {
-        console.log(btn[0].innerHTML)
-        if (btn[0].innerHTML.trim() == startText) {
-          btn[0].innerHTML = "Starting...";
-          submitForm();
-          setTimeout(() => {
+    if ($('#verbose').val() == "1") {
+      $('#logging').prop('checked', true);
+    }
+    if ($('#verbose').val() == "2") {
+      $('#logging').prop('checked', true);
+      $('#logHeaders').prop('checked', true);
+    }
+    {{#images}}
+    $('#images').prop('checked', true);
+    {{/images}}
+        {{#videos}}
+        $('#videos').prop('checked', true);
+        {{/videos}}
             $.ajax({
-              url: '/api/user-server/start', success: (res) => {
-                if (res === "OK") {
-                  btn[0].innerHTML = stopText
-                  btn.toggleClass("btn-dark btn-danger");
+              url: '/api/user-server/status',
+              success: (res) => {
+                if (res == 'OK')
+                  btn[0].innerHTML = stopText;
+                else if (res == 'FAIL')
+                  btn[0].innerHTML = startText;
+              }
+            })
+            btn.click(() => {
+              console.log(btn[0].innerHTML)
+              if (btn[0].innerHTML.trim() == startText) {
+                btn[0].innerHTML = "Starting...";
+                submitForm();
+                setTimeout(() => {
+                  $.ajax({
+                    url: '/api/user-server/start', success: (res) => {
+                      if (res === "OK") {
+                        btn[0].innerHTML = stopText
+                        btn.toggleClass("btn-dark btn-danger");
+                      }
+                    }
+                  });
+                }, 1000);
+              }
+              else {
+                btn[0].innerHTML = "Stopping...";
+                $.ajax({
+                  url: '/api/user-server/stop', success: (res) => {
+                    if (res === "OK") {
+                      btn[0].innerHTML = startText
+                      btn.toggleClass("btn-dark btn-danger");
+                    }
+                  }
+                });
+              }
+            })
+            $("#clearlogs").click(() => {
+              $.ajax({
+                url: '/api/clearlogs', success: (res) => {
+                  if (res === "OK") {
+                    $("#clearlogs")[0].innerHTML = "Cleared!";
+                  }
+                  else if (res === "FAIL") {
+                    $("#clearlogs")[0].innerHTML = "Failed! Try stopping the server";
+                  }
+                  setTimeout(() => {
+                    $("#clearlogs")[0].innerHTML = "Clear Logs"
+                  }, 2000);
                 }
-              }
+              });
             });
-          }, 1000);
-        }
-        else {
-          btn[0].innerHTML = "Stopping...";
-          $.ajax({
-            url: '/api/user-server/stop', success: (res) => {
-              if (res === "OK") {
-                btn[0].innerHTML = startText
-                btn.toggleClass("btn-dark btn-danger");
-              }
+            function reloadIframe() {
+              $.ajax({
+                url: '/logs', dataType: "html", success: (res) => {
+                  let objDiv = $("#clientlogs")[0];
+                  var result = $('<div />').append(res).html();
+                  objDiv.innerHTML = res;
+                  objDiv.scrollTop = objDiv.scrollHeight;
+                }
+              });
             }
-          });
-        }
-      })
-      $("#clearlogs").click(() => {
-        $.ajax({
-          url: '/api/clearlogs', success: (res) => {
-            if (res === "OK") {
-              $("#clearlogs")[0].innerHTML = "Cleared!";
-            }
-            else if (res === "FAIL") {
-              $("#clearlogs")[0].innerHTML = "Failed! Try stopping the server";
-            }
-            setTimeout(() => {
-              $("#clearlogs")[0].innerHTML = "Clear Logs"
-            }, 2000);
-          }
-        });
-      });
-      function reloadIframe() {
-        $.ajax({
-          url: '/logs', dataType: "html", success: (res) => {
-            let objDiv = $("#clientlogs")[0];
-            var result = $('<div />').append(res).html();
-            objDiv.innerHTML = res;
-            objDiv.scrollTop = objDiv.scrollHeight;
-          }
-        });
-      }
-      var reload = setInterval(reloadIframe, 1000);
-      $("#clientlogs").hover(function () {
-        clearInterval(reload);
-      }, function () {
-        clearInterval(reload);
-        reload = setInterval(reloadIframe, 1000);
-      });
-    })
+            var reload = setInterval(reloadIframe, 1000);
+            $("#clientlogs").hover(function () {
+              clearInterval(reload);
+            }, function () {
+              clearInterval(reload);
+              reload = setInterval(reloadIframe, 1000);
+            });
+          })
   </script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
     integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"

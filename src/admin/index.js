@@ -43,8 +43,8 @@ app.get('/', (req, res) => {
     logging: req.session.logging,
     verbose: req.session.verbose,
     logHeaders: req.session.logHeaders,
-    images: req.session.images || 0,
-    videos: req.session.videos || 0,
+    images: req.session.images,
+    videos: req.session.videos,
   });
 });
 

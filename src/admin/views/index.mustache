@@ -94,7 +94,7 @@
           <form id="settingsform" action="/api/update-settings" method="post">
             <div class="row">
               <!-- Area Chart -->
-              <div class="col">
+              <div class="col-xl-8 xol-lg-7">
                 <div class="card shadow mb-4">
                   <!-- Card Header - Dropdown -->
                   <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -143,43 +143,33 @@
                   <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Select Media Types </h6>
                   </div>
-                  <!-- Card Body -->
-                  <!-- <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                      <canvas id="myPieChart"></canvas>
-                    </div>
-                    <div class="mt-4 text-center small">
-                      <span class="mr-2">
-                        <i class="fas fa-circle text-primary"></i> mp4
-                      </span>
-                    <span class="mr-2">
-                      <i class="fas fa-circle text-success"></i> avi
-                    </span>
-                    <span class="mr-2">
-                      <i class="fas fa-circle text-info"></i> mkv
-                    </span>
-                  </div>
-                </div> -->
-                  <div class="pt-4 pb-2">
-                    <div class="form-group custom-control custom-switch d-inline">
+                  <div class="card-body pt-4 pb-2">
+                  <div class="row">
+                    <div class="col-xl-3 col-lg-4">
+                    <div class="form-group d-inline custom-control custom-switch d-inline">
                       <input name='images' type="checkbox" value=1 class="custom-control-input" id="images">
                       <label class="custom-control-label" for="images">
                         Images
                       </label>
                     </div>
-                    <div class="d-inline">
-                      <img src="/static/images/card-image.svg" width="24" height="24">
-                    </div>
                     <br>
-                    <div class="form-group custom-control custom-switch d-inline">
+                    <div class="form-group d-inline custom-control custom-switch d-inline">
                       <input name='videos' type="checkbox" value=1 class="custom-control-input" id="videos">
                       <label class="custom-control-label" for="videos">
                         Videos
                       </label>
                     </div>
+                    <br>
+                    </div>
+                    <div class="col-xl-1 col-lg-1">
+                    <div class="d-inline">
+                      <img src="/static/images/card-image.svg" width="24" height="24">
+                    </div>
+                    <br>
                     <div class="d-inline">
                       <img src="/static/images/camera-video-fill.svg" width="24" height="24">
                     </div>
+                  </div>
                   </div>
                 </div>
               </div>

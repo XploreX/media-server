@@ -7,7 +7,9 @@ const path = require('path');
 const express = require('express');
 const serveIndex = require('serve-index');
 
-const contentService = require(config.root + '/src/user/services/content');
+const contentService = requireUncached(
+    config.root + '/src/user/services/content',
+);
 const settings = requireUncached(config.root + '/src/client-settings');
 
 // eslint-disable-next-line new-cap

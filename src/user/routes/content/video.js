@@ -47,8 +47,8 @@ router.get('/*', (req, res, next) => {
       videoSource: videoSource,
       videoType: videoType,
       subtitleSource: subtitleSource,
-      next: adjacentFiles['next'] || '#',
-      prev: adjacentFiles['previous'] || '#',
+      next: adjacentFiles['next'],
+      prev: adjacentFiles['previous'],
     });
   }
 });

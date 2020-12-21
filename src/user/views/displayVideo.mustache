@@ -62,9 +62,11 @@
       </div>
     </div>
     <div class="row">
+      
       <div class="col-3 col-sm-2 text-left align-self-center">
         <a id="prev" type="button" class="btn btn-lg btn-danger" href="{{prev}}">Prev</a>
       </div>
+      
       <div class="col-6 col-sm-8 embed-responsive embed-responsive-16by9">
         <video width="auto" onloadstart='convert(1)' class="embed-responsive-item" controls>
           <source src="{{videoSource}}" type="{{videoType}}">
@@ -74,12 +76,27 @@
           </p>
         </video>
       </div>
+      
       <div class="col-3 col-sm-2 text-right align-self-center">
         <a id="next" type="button" class="btn btn-lg btn-primary" href="{{next}}">Next</a>
       </div>
+      
     </div>
   </div>
+  <script>
+    console.log("right here","{{next}}","{{prev}}");
+    let nextVideoLink = document.querySelector('#next');
+    let previousVideoLink = document.querySelector('#prev');
 
+    {{^next}}
+    nextVideoLink.style.visibility = 'hidden';
+    {{/next}}
+
+    {{^prev}}
+    previousVideoLink.style.visibility = 'hidden';
+    {{/prev}}
+    
+  </script>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
     </script>

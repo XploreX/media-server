@@ -84,7 +84,7 @@
     </div>
   </div>
   <script>
-    console.log("right here","{{next}}","{{prev}}");
+    
     let nextVideoLink = document.querySelector('#next');
     let previousVideoLink = document.querySelector('#prev');
 
@@ -95,7 +95,7 @@
     {{^prev}}
     previousVideoLink.style.visibility = 'hidden';
     {{/prev}}
-    
+
   </script>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous">
@@ -133,6 +133,11 @@
       if (event.key == 'ArrowRight' || event.key == 'MediaFastForward') {
         video.currentTime = (video.duration - video.currentTime > 10 ? video.currentTime + 10 : video.duration) //increase video current time by 10s 
       }                                                          //or increase it to video's duration if currentTime + 10s will exceed video's duration
+      if(!isNaN(event.key)) //event.key is a number
+      {
+        percentageToConsider = (+event.key)*10  //converting string to number
+        video.currentTime = (percentageToConsider/100) * video.duration;
+      }
     });
     document.addEventListener('keyup', (event) => {
       if (event.isComposing || event.keyCode == 229) {

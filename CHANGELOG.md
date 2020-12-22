@@ -2,7 +2,19 @@
 
 ## [Unreleased](https://github.com/XploreX/media-server/tree/HEAD)
 
-[Full Changelog](https://github.com/XploreX/media-server/compare/v2.0.0...HEAD)
+[Full Changelog](https://github.com/XploreX/media-server/compare/v3.0.0...HEAD)
+
+**Implemented enhancements:**
+
+- seek to video percentage [\#25](https://github.com/XploreX/media-server/issues/25)
+
+**Closed issues:**
+
+- Hide next and previous button in displayVideo page when not required [\#26](https://github.com/XploreX/media-server/issues/26)
+
+## [v3.0.0](https://github.com/XploreX/media-server/tree/v3.0.0) (2020-12-18)
+
+[Full Changelog](https://github.com/XploreX/media-server/compare/v2.0.0...v3.0.0)
 
 **Implemented enhancements:**
 
@@ -15,6 +27,7 @@
 
 **Fixed bugs:**
 
+- toggling images switch in admin-panel, content still shown in directory listing [\#23](https://github.com/XploreX/media-server/issues/23)
 - content not found [\#18](https://github.com/XploreX/media-server/issues/18)
 
 **Closed issues:**

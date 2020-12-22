@@ -5,12 +5,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: |
+      - uses: actions/checkout@master
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
+          fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+      - name: Create local changes
+        run: |
           npm install
           npm run fix-lint
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add .
-          git commit -m "Lint Commit"
-          git push
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v5
+        with:
+          author_name: Github
+          author_email: Github-lint@mediaserver.com
+          message: 'Lint Commit'
+          add: '.'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

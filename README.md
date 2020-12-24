@@ -37,6 +37,7 @@ Don't worry, MediaServer has come to your rescue. It is a local media server to 
     + [Windows](#windows)
     + [MacOS](#macos)
 - [Screenshots](#screenshots)
+- [Features](#features)
 - [How to use from source code](#how-to-use-from-source-code)
 - [FAQs](#faqs)
   * [One of the following](#one-of-the-following)
@@ -124,7 +125,19 @@ Options:
 ## Screenshots
 You can see the working of the app [here.](https://github.com/XploreX/media-server/blob/master/images/screenshots.md)
 
+## Features
+
+- **Admin Panel** to allow GUI Configurations
+- **Support SRT's** out of the box
+- **Play/Pause/Rewind/Forward** to use your remote keys to control the webplayer
+- **Photo Viewer** to watch your favorite pics in TV (not enabled by default)
+- **Auto Next** as soon as the video ends
+- **Seek in video, Just like Youtube!!** using your remote numpad
+
+And more in next releases...
+
 ## How to use from source code
+
 
 - Clone the repository
    ```

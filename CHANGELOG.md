@@ -12,6 +12,11 @@
 
 - Hide next and previous button in displayVideo page when not required [\#26](https://github.com/XploreX/media-server/issues/26)
 
+**Merged pull requests:**
+
+- Create CODE\_OF\_CONDUCT.md [\#28](https://github.com/XploreX/media-server/pull/28) ([manorit2001](https://github.com/manorit2001))
+- Update issue templates [\#27](https://github.com/XploreX/media-server/pull/27) ([manorit2001](https://github.com/manorit2001))
+
 ## [v3.0.0](https://github.com/XploreX/media-server/tree/v3.0.0) (2020-12-18)
 
 [Full Changelog](https://github.com/XploreX/media-server/compare/v2.0.0...v3.0.0)

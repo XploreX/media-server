@@ -12,8 +12,8 @@ jobs:
           if [[  $(git diff | tail | wc -l) -ne 0 ]]
           then
               git add .
-              git config user.name github-actions
-              git config user.email github-actions@github.com
+              git config user.name manorit chawdhry
+              git config user.email manorit2001@gmail.com
               git commit -m "Lint-Commit"
               git push
           fi

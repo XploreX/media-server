@@ -60,6 +60,6 @@ if (!fs.existsSync(config.logFile)) {
   console.log('Made blank log file');
 }
 app.use('/logs', express.static(config.logFile));
-app.use('/static', express.static(config.root + '/src/admin/assets'));
+app.use('/assets', express.static(config.root + '/src/admin/assets'));
 
 module.exports = app;

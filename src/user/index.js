@@ -54,6 +54,6 @@ app.use('/content', contentRouter);
 
 const content = settings.location;
 app.use('/public', express.static(content));
-app.use('/static', express.static(config.root + '/src/user/assets'));
+app.use('/assets', express.static(config.root + '/src/user/assets'));
 
 module.exports = app;

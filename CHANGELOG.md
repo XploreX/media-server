@@ -2,7 +2,19 @@
 
 ## [Unreleased](https://github.com/XploreX/media-server/tree/HEAD)
 
-[Full Changelog](https://github.com/XploreX/media-server/compare/v3.0.0...HEAD)
+[Full Changelog](https://github.com/XploreX/media-server/compare/v3.0.1...HEAD)
+
+**Implemented enhancements:**
+
+- Go to homepage in 404 pages [\#31](https://github.com/XploreX/media-server/issues/31)
+
+**Closed issues:**
+
+- Proposal to change /static to /assets [\#29](https://github.com/XploreX/media-server/issues/29)
+
+## [v3.0.1](https://github.com/XploreX/media-server/tree/v3.0.1) (2020-12-24)
+
+[Full Changelog](https://github.com/XploreX/media-server/compare/v3.0.0...v3.0.1)
 
 **Implemented enhancements:**
 

@@ -2,7 +2,7 @@ const open = require('open');
 
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
-// require('dotenv').config();
+require('dotenv').config();
 
 global.__config = require(__dirname + '/config');
 const config = global.__config;

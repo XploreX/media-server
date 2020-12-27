@@ -2,7 +2,7 @@ const open = require('open');
 
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
-require('dotenv').config();
+// require('dotenv').config();
 
 global.__config = require(__dirname + '/config');
 const config = global.__config;
@@ -72,6 +72,13 @@ if (argv.g) {
       adminServer.address().port;
     console.log('listening at ' + url);
     open(url);
+  });
+  adminServer.on('error', (err) => {
+    if (err.errno === -98) {
+      const url = 'http://' + err.address + ':' + err.port;
+      console.log('Server already running at '+ url);
+      open(url);
+    }
   });
   admin.on('close', () => {});
 } else {

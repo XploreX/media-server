@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/XploreX/media-server/tree/HEAD)
+## [v3.0.2](https://github.com/XploreX/media-server/tree/v3.0.2) (2020-12-27)
 
-[Full Changelog](https://github.com/XploreX/media-server/compare/v3.0.1...HEAD)
+[Full Changelog](https://github.com/XploreX/media-server/compare/v3.0.1...v3.0.2)
 
 **Implemented enhancements:**
 
@@ -41,6 +41,7 @@
 - Adding good user interface to specify media location [\#6](https://github.com/XploreX/media-server/issues/6)
 - previous, next buttons in video page [\#2](https://github.com/XploreX/media-server/issues/2)
 - Improve image display [\#19](https://github.com/XploreX/media-server/pull/19) ([parth-07](https://github.com/parth-07))
+- Resume functionality [\#4](https://github.com/XploreX/media-server/pull/4) ([manorit2001](https://github.com/manorit2001))
 
 **Fixed bugs:**
 
@@ -69,7 +70,6 @@
 - Proposition to change content location from root route to something specific  [\#8](https://github.com/XploreX/media-server/issues/8)
 - Specifying media location as an optional argument while running the app [\#5](https://github.com/XploreX/media-server/issues/5)
 - adding resume functionality [\#1](https://github.com/XploreX/media-server/issues/1)
-- Resume functionality [\#4](https://github.com/XploreX/media-server/pull/4) ([manorit2001](https://github.com/manorit2001))
 
 **Merged pull requests:**
 

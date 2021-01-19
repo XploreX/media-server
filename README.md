@@ -6,7 +6,7 @@
 [![stars](https://img.shields.io/github/stars/XploreX/MediaServer)](https://github.com/XploreX/MediaServer/stargazers)
 [![license](https://img.shields.io/github/license/XploreX/MediaServer)](https://github.com/XploreX/MediaServer/blob/master/LICENSE)
 [![Code Style: Google](https://img.shields.io/badge/code%20style-google-blueviolet.svg)](https://github.com/google/eslint-config-google)
-[![Downloads](https://img.shields.io/github/downloads/XploreX/media-server/latest/total)](https://github.com/XploreX/media-server/releases)
+[![Downloads](https://img.shields.io/github/downloads/XploreX/media-server/total)](https://github.com/XploreX/media-server/releases)
 
 _Tired of using pendrive to copy paste media while wanting to watch them on TV?_
 _Wish you could watch your laptop videos on TV easily?_

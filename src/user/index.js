@@ -14,8 +14,8 @@ const contentRouter = requireUncached(config.root + '/src/user/routes/content');
 // All the client-settings and routers which
 // import client settings should be imported using requiredUncached
 const settings = requireUncached(config.root + '/src/client-settings');
-const userSessionConfig =
-    require(config.root + '/src/user/user-session-config');
+const userSessionConfig = require(config.root +
+  '/src/user/user-session-config');
 
 const app = express();
 
@@ -31,7 +31,7 @@ app.use(
       resave: false,
       saveUninitialized: true,
       cookie: {
-        maxAge: 30 * 24 * 60 * 60 * 1000,  // milliseconds in 30 days
+        maxAge: 30 * 24 * 60 * 60 * 1000, // milliseconds in 30 days
       },
       store: new FileStore(),
     }),

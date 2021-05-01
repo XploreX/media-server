@@ -1,4 +1,4 @@
-name: npm linter
+name: npm auto linter
 
 on: 
   push:

@@ -1,19 +1,11 @@
-name: npm linter
+name: npm lint checker
 
-on: []
+on: [push]
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: |
           npm install
           npm run fix-lint
-          if [[  $(git diff | tail | wc -l) -ne 0 ]]
-          then
-              git add .
-              git config user.name Github
-              git config user.email 
-              git commit -m "Lint-Commit"
-              git push
-          fi

@@ -21,5 +21,7 @@ jobs:
           commit-message: Lint commit
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          body: |
+            All lints were auto-fixable
           labels: |
             automated-pr

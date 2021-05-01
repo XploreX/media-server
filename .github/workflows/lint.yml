@@ -1,6 +1,6 @@
 name: npm linter
 
-on: [push]
+on: []
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,8 +12,8 @@ jobs:
           if [[  $(git diff | tail | wc -l) -ne 0 ]]
           then
               git add .
-              git config user.name manorit chawdhry
-              git config user.email manorit2001@gmail.com
+              git config user.name Github
+              git config user.email 
               git commit -m "Lint-Commit"
               git push
           fi

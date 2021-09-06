@@ -141,7 +141,7 @@ And more in next releases...
 
 - Clone the repository
    ```
-   git clone https://github.com/manorit2001/MediaServer`
+   git clone https://github.com/XploreX/media-server
    ```
 - Change the directory and install node modules
    ```

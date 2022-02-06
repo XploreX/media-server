@@ -2,7 +2,7 @@
 import logging
 import os
 import re
-import subprocess as sp
+import subprocess
 import sys
 import time
 import shutil
@@ -10,6 +10,7 @@ from pathlib import Path
 import click
 import subprocess
 from logger import CustomFormatter
+from video import Video
 
 log = logging.getLogger("convert.py")
 log.setLevel(logging.DEBUG)
@@ -25,11 +26,10 @@ def enable_logging():
 def find_files(path):
     # Check if if location is a dir
     if not path.is_dir():
-        dirs = [path.name]
-        basedir = path.parents[0]
+        files = [path]
     else:
-        dirs = [
-            Path(filename).name
+        files = [
+            path / Path(filename)
             for filename in os.listdir(path)
             if filename.endswith(
                 (
@@ -45,36 +45,24 @@ def find_files(path):
                 )
             )
         ]
-        basedir = path
-    return basedir, dirs
+    return [Video(i) for i in files]
 
 
-def extract_metadata(path):
-    out = subprocess.check_output(
-        ["ffprobe", "-hide_banner", path], stderr=subprocess.STDOUT
-    )
-    regex = r"Stream #([0-9:\(\)a-zA-Z]*):\s*([a-zA-Z]*)\s*:\s*([a-zA-Z0-9\(\) /]*)"
-    metadata = []
-    for line in out.decode("utf-8").split("\n"):
-        log.debug(line)
-        if "Stream" in line:
-            groups = re.search(regex, line).groups()
-            assert len(groups) == 3
-            metadata.append(groups)
-    return metadata
+def check_metadata(stream):
+    log.debug(stream)
+    if stream.compatible:
+        log.info(f"{stream.no}: {stream.type} is compatible")
+    else:
+        log.error(f"{stream.no}: {stream.type} is not compatible")
 
 
-def check_file_codec(metadata):
-    stream, type, codec = metadata
-    video = False
-    audio = False
-    if type == "Video":
-        if any(allowed_codecs in codec for allowed_codecs in ["h264"]):
-            video = True
-    elif type == "Audio":
-        if any(allowed_codecs in codec for allowed_codecs in ["aac"]):
-            audio = True
-    return video, audio
+def check_subtitle(file):
+    if file.endswith(".vtt"):
+        log.info(f"{file}: compatible")
+    elif file.endswith(".srt"):
+        log.warning(f"{file}: experimental")
+    else:
+        log.error(f"{file}: incompatible")
 
 
 @click.command()
@@ -85,16 +73,41 @@ def check_file_codec(metadata):
     required=True,
 )
 def check(path):
-    base_dir, files = find_files(Path(path))
-    for file in files:
-        log.info(file)
-        metadata = extract_metadata(base_dir / file)
+    videos = find_files(Path(path))
+    for video in videos:
+        log.info(video.name)
+        for stream in video.metadata:
+            check_metadata(stream)
+        for file in video.subtitle_files:
+            check_subtitle(file)
+
+
+@click.command()
+@click.option(
+    "--path",
+    help="Path to file or directory",
+    type=click.Path(exists=True),
+    required=True,
+)
+def convert(path):
+    videos = find_files(Path(path))
+    for video in videos:
+        log.info(video.name)
         for data in metadata:
             video, audio = check_file_codec(data)
-            if video:
-                log.info("Video metadata is compatible")
-            if audio:
-                log.info("Audio metadata is compatible")
+            cmd = [
+                "ffmpeg",
+                "-y",
+                "-vsync",
+                "0",
+                "-threads",
+                os.cpu_count(),
+                "-hwaccel",
+                "auto",
+                "-i",
+                str(base_dir / file),
+                str(base_dir / (file.stem + ".mp4")),
+            ]
 
 
 @click.group()
